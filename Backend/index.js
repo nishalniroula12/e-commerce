@@ -9,6 +9,8 @@ import userroutes from './routes/userroutes.js'
 import categoryroutes from './routes/categoryroutes.js'
 import productroutes from './routes/productroutes.js'
 import sellerroutes from './routes/sellerroutes.js'
+import orderroutes from './routes/orderroutes.js'
+import cartroutes from './routes/cartroutes.js'
 import cookieParser from "cookie-parser";
 
 const app =express()
@@ -27,6 +29,9 @@ app.use("/api" ,userroutes)
 app.use("/api",categoryroutes)
 app.use("/api" ,productroutes)
 app.use("/api" ,sellerroutes)
+app.use("/api" ,orderroutes)
+app.use("/api",cartroutes)
+
 app.get("/" ,(req,res)=>{
     res.json({
         success:true,

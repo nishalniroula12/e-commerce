@@ -1,25 +1,50 @@
-import React from 'react'
-import Navbar from './component/Navbar.jsx'
-import { Routes,Route  } from 'react-router-dom'
-import Home from './pages/Home.jsx'
-import Category from './pages/Category.jsx'
-import Product from './pages/Product.jsx'
+import { Routes, Route } from "react-router-dom";
+
+import Home from "./pages/Home";
+import Category from "./pages/Category";
+import Product from "./pages/Product";
+import Login from "./pages/Login";
+import Signin from "./pages/Signin";
+import Seller from "./pages/seller/Seller";
+
+import Protectedroutes from "./component/Protectedroutes";
+import Mainlayout from "./component/Mainlayout";
+import Addcategory from "./pages/seller/Addcategory";
+import Allcategory from "./pages/seller/Allcategory";
+import Addproduct from "./pages/seller/Addproduct";
+import Allproduct from "./pages/seller/Allproduct";
 
 const App = () => {
   return (
-    <div>
-        <Navbar/>
-        <Routes>
-            <Route path='/' element={<Home/>}/>
-            <Route path="/category" element={<Category/>}/>
-            <Route path="/product" element={<Product/>}/>
-          
-            
-        </Routes>
+    <Routes>
 
-      
-    </div>
-  )
-}
+      {/* PUBLIC ROUTES (with navbar) */}
+      <Route element={<Mainlayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/category/:id" element={<Category />} />
+        <Route path="/product/:id" element={<Product />} />
+      </Route>
 
-export default App
+      {/* AUTH PAGES (no navbar) */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signin" element={<Signin />} />
+
+      {/* PROTECTED ROUTES */}
+      <Route element={<Protectedroutes />}>
+        <Route element={<Mainlayout />}>
+          <Route path="/sellerpanel" element={<Seller />} />
+          <Route path="/dashboard" element={<Seller />} />
+          <Route path="/addcategory" element={<Addcategory/>}/>
+          <Route path="/addcategory/:id" element={<Addcategory/>}/>
+          <Route path="/allcategory" element={<Allcategory/>}/>
+          <Route path="/addproduct" element={<Addproduct/>}/>
+          <Route path="/addproduct/:id" element={<Addproduct/>}/>
+          <Route path="/allproduct" element={<Allproduct/>}/>
+        </Route>
+      </Route>
+
+    </Routes>
+  );
+};
+
+export default App;

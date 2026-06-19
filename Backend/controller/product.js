@@ -4,7 +4,7 @@ import { Uploadcloudinary } from "../utlis/cloudinaryupload.js";
 
 export const productcreate =async(req,res)=>{
     try {
-        const {title,slug,description ,status,price,discounted,category,stock,code} =req.body;
+        const {title,slug,description ,status,price,discounted,category,stock,code,rating} =req.body;
         const result =await Uploadcloudinary(req.file.buffer,"product")
         console.log(result)
         console.log("Category from req.body:", category);
@@ -18,11 +18,12 @@ export const productcreate =async(req,res)=>{
             code,
             stock,
             category,
+            rating,
             image:result.secure_url,
             public_id:result.public_id
         })
         console.log(product);
-        return res.status(404).json({
+        return res.status(200).json({
             success:true,
             message:"Product List is Created",
             product
@@ -76,7 +77,7 @@ export const niskenabelavayo = async (req, res) => {
         console.log("Product found:", product);
 
         if (!product) {
-            return res.status(404).json({
+            return res.status(200).json({
                 success: false,
                 message: "Product not found"
             });
@@ -101,7 +102,7 @@ export const niskenabelavayo = async (req, res) => {
 
 export const updateone =async(req,res)=>{
     try {
-        const {title,slug,description ,status,price,discounted,category,stock,code} =req.body;
+        const {title,slug,description ,status,price,discounted,category,stock,code,rating} =req.body;
         console.log(req.body)
 
         const product =await Product.findById(req.params.id).populate("category")
@@ -122,6 +123,7 @@ export const updateone =async(req,res)=>{
         product.stock =stock || product.stock
         product.price =price || product.price
         product.discounted =discounted || product.discounted
+        product.rating =rating || product.rating
 
         if(req.file){
             await cloudinary.uploader.destroy(product.public_id)

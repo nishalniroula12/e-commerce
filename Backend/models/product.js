@@ -47,6 +47,9 @@ const productmodel =new mongoose.Schema({
     public_id:{
         type:String,
         required:true
+    },
+    rating:{
+        type:Number,
     }
 
 

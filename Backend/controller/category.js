@@ -1,6 +1,5 @@
 import cloudinary from "../config/cloudinary.js"
 import Category from "../models/category.js"
-import User from "../models/user.js"
 import { Uploadcloudinary } from "../utlis/cloudinaryupload.js"
 
 export const createcategory =async(req,res)=>{
@@ -56,8 +55,8 @@ export const categorybyid=async(req,res)=>{
     try {
         const {id} =req.params;
         console.log(id)
-        const category =await User.findById(id)
-        return res.status(400).json({
+        const category =await Category.findById(id)
+        return res.status(200).json({
             success:true,
             message:"Get by id",
             category
@@ -84,7 +83,7 @@ export const niskinebelavayo =async(req,res)=>{
         }
         await cloudinary.uploader.destroy(category.public_id)
         await category.deleteOne()
-        return res.status(400).json({
+        return res.status(200).json({
             success:true,
             message:"niskiyo ",
             category
@@ -121,6 +120,7 @@ const result =await Uploadcloudinary(req.file.buffer)
 category.image =result.secure_url
 category.public_id =result.public_id
 console.log(result.public_id)
+console.log(req.file)
    }
   
       const updatedCategory = await category.save();
