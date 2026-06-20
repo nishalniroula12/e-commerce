@@ -1,59 +1,58 @@
 import mongoose from "mongoose";
 
-const cartitemschema =new mongoose.Schema({
-    product:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Product",
-        required:true
+const cartitemschema = new mongoose.Schema({
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  image: {
+    type: String,
+  },
+  quantity: {
+    type: Number,
+    default: 1,
+    min: 1,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+});
+const cartSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    name:{
-        type:String,
-        required:true,
+    itemL: [cartitemschema],
+    totalamount: {
+      type: Number,
+      default: 0,
     },
-    image:{
-        type:String,
+    totalitems: {
+      type: Number,
+      default: 0,
     },
-    quantity:{
-        type:Number,
-        default:1,
-        min:1
+  },
+  { timestamps: true }
+);
+cartSchema.pre("save", async function () {
+  try {
+    this.totalitems = this.itemL.reduce((sum, item) => sum + item.quantity, 0);
 
-    },
-    price:{
-        type:Number,
-        required:true
-    }
-})
-const cartSchema =new mongoose.Schema({
-    user:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
-    },
-    itemL:[cartitemschema],
-    totalamount:{
-        type:Number,
-        default:0
-    },
-    totalitems:{
-        type:Number,
-        default:0
-    }
-},{timestamps:true})
-
-cartSchema.pre("save", function(next) {
-    this.totalitems = this.itemL.reduce(
-      (sum, item) => sum + item.quantity,
-      0
-    );
-  
     this.totalamount = this.itemL.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
-  
-    next();
-  });
-  
+  } catch (error) {
+    throw error;
+  }
+});
 
-const Cart =mongoose.model("Cart" ,cartSchema)
-export default Cart
+const Cart = mongoose.model("Cart", cartSchema);
+export default Cart;

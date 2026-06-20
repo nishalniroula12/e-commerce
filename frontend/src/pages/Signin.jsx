@@ -132,6 +132,7 @@ const Signin = () => {
                     className="w-full p-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 outline-none transition"
                   ><option>admin</option>
                   <option>seller</option>
+                  <option>user</option>
                     
                   </select>
                 </div>

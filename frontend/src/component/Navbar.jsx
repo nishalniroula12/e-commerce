@@ -11,7 +11,7 @@ import {
   FiUserPlus,
 } from "react-icons/fi";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -19,6 +19,7 @@ const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
+  const nav =useNavigate()
 
   const isAuthenticate = useSelector((state) => state.data.isAuthenticate);
   const user = useSelector((state) => state.data.user
@@ -453,10 +454,17 @@ const Navbar = () => {
               >
                 {isAuthenticate ? (
                   <>
+                   <div className="nav-cart">
+                      <FiShoppingCart size={20} />
+                      <NavLink to="/cart" className="nav-cart-badge">3</NavLink>
+                    </div>
+
                     {/* Seller Dashboard */}
+                    {user?.role ==="seller" && (
                     <NavLink to="/sellerpanel" className="nav-link">
                       Seller DB
                     </NavLink>
+                    )}
 
                     {/* You can also show Home shortcut if you want */}
                     
@@ -467,7 +475,7 @@ const Navbar = () => {
                     {/* Cart */}
                     <div className="nav-cart">
                       <FiShoppingCart size={20} />
-                      <span className="nav-cart-badge">3</span>
+                      <NavLink to="/cart" className="nav-cart-badge">3</NavLink>
                     </div>
 
                     {/* Auth buttons */}
@@ -523,9 +531,9 @@ const Navbar = () => {
               <a className="mobile-link" onClick={() => setMobileOpen(false)}>
                 🏪 Become a Seller
               </a>
-              <a className="mobile-link" onClick={() => setMobileOpen(false)}>
+              <NavLink to="/cart" className="mobile-link" onClick={() => setMobileOpen(false)}>
                 🛒 Cart (3 items)
-              </a>
+              </NavLink>
 
               <div className="mobile-auth">
                 <NavLink

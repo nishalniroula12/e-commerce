@@ -13,6 +13,7 @@ import Addcategory from "./pages/seller/Addcategory";
 import Allcategory from "./pages/seller/Allcategory";
 import Addproduct from "./pages/seller/Addproduct";
 import Allproduct from "./pages/seller/Allproduct";
+import Cart from "./pages/Cart";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/category/:id" element={<Category />} />
         <Route path="/product/:id" element={<Product />} />
+        <Route path="/cart" element={<Cart/>}/>
       </Route>
 
       {/* AUTH PAGES (no navbar) */}

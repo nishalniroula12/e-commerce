@@ -66,7 +66,7 @@ export const loginone =async(req,res)=>{
             message:"Invalid password"
         })
     }
-    const token =generatetoken({id:user._id}, process.env.secret ,"7d")
+    const token =generatetoken({id:user._id}, process.env.JWT_SECRET ,"7d")
     res.cookie("token",token,{
         httpOnly: true,
         secure: false,

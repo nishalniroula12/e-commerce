@@ -576,7 +576,7 @@ const Product = () => {
                         Buy Now
                       </button>
                       <button
-                        onClick={handleAddToCart}
+                        onClick={()=>nav("/cart")}
                         className={`btn-cart ${cartAdded ? "added" : "border-orange-400 text-orange-500"} flex-1 border-2 font-extrabold py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2`}
                       >
                         {cartAdded ? (
