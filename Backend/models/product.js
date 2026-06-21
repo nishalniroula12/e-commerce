@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const productmodel =new mongoose.Schema({
+    
     title:{
         type:String,
         required:true

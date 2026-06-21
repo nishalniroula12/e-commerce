@@ -464,7 +464,15 @@ const Navbar = () => {
                     <NavLink to="/sellerpanel" className="nav-link">
                       Seller DB
                     </NavLink>
+                    
                     )}
+
+<div className="nav-links" style={{ gap: 8 }}>
+                      <NavLink to="/login" className="btn-login">
+                        Log in
+                      </NavLink>
+                      </div>
+                  
 
                     {/* You can also show Home shortcut if you want */}
                     

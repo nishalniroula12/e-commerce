@@ -37,7 +37,7 @@ export const productcreate =async(req,res)=>{
 //public
 export const publicdata =async(req,res)=>{
     try {
-        const product =await Product.find().populate("category")
+        const product =await (await Product.find().populate("category"))
         console.log(product)
         res.status(200).json({
             success:true,
