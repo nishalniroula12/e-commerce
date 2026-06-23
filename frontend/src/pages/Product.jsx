@@ -2,7 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay, Thumbs, EffectFade } from "swiper/modules";
+import {
+  Navigation,
+  Pagination,
+  Autoplay,
+  Thumbs,
+  EffectFade,
+} from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -168,7 +174,9 @@ const SkeletonLoader = () => (
       <div className="lg:w-[45%] flex flex-col gap-3">
         <div className="skeleton h-[380px] w-full rounded-2xl" />
         <div className="flex gap-2">
-          {[...Array(4)].map((_, i) => <div key={i} className="skeleton h-16 flex-1 rounded-xl" />)}
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="skeleton h-16 flex-1 rounded-xl" />
+          ))}
         </div>
       </div>
       <div className="lg:w-[55%] flex flex-col gap-4 pt-2">
@@ -178,7 +186,9 @@ const SkeletonLoader = () => (
         <div className="skeleton h-11 w-44 rounded-xl" />
         <div className="skeleton h-16 w-full rounded-xl" />
         <div className="grid grid-cols-2 gap-3">
-          {[...Array(4)].map((_, i) => <div key={i} className="skeleton h-12 rounded-xl" />)}
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="skeleton h-12 rounded-xl" />
+          ))}
         </div>
         <div className="flex gap-3 mt-2">
           <div className="skeleton h-12 flex-1 rounded-2xl" />
@@ -196,12 +206,21 @@ const StarRating = ({ rating = 0, count }) => (
   <div className="flex items-center gap-2">
     <div className="flex gap-0.5">
       {[...Array(5)].map((_, i) => (
-        <svg key={i} className={`w-[18px] h-[18px] ${i < Math.floor(rating) ? "text-amber-400" : "text-gray-200"}`} fill="currentColor" viewBox="0 0 20 20">
+        <svg
+          key={i}
+          className={`w-[18px] h-[18px] ${
+            i < Math.floor(rating) ? "text-amber-400" : "text-gray-200"
+          }`}
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
         </svg>
       ))}
     </div>
-    <span className="text-sm font-semibold text-gray-700">{rating ? `${rating}/5` : "No ratings"}</span>
+    <span className="text-sm font-semibold text-gray-700">
+      {rating ? `${rating}/5` : "No ratings"}
+    </span>
     {count && <span className="text-xs text-gray-400">({count} reviews)</span>}
   </div>
 );
@@ -213,9 +232,21 @@ const QuantitySelector = () => {
   const [qty, setQty] = useState(1);
   return (
     <div className="flex items-center border-2 border-gray-100 rounded-xl overflow-hidden shadow-sm bg-white">
-      <button onClick={() => setQty(q => Math.max(1, q - 1))} className="qty-btn px-4 py-2.5 text-gray-500 text-xl font-light select-none">−</button>
-      <span className="px-5 py-2.5 text-sm font-bold text-gray-800 border-x-2 border-gray-100 min-w-[46px] text-center">{qty}</span>
-      <button onClick={() => setQty(q => q + 1)} className="qty-btn px-4 py-2.5 text-gray-500 text-xl font-light select-none">+</button>
+      <button
+        onClick={() => setQty((q) => Math.max(1, q - 1))}
+        className="qty-btn px-4 py-2.5 text-gray-500 text-xl font-light select-none"
+      >
+        −
+      </button>
+      <span className="px-5 py-2.5 text-sm font-bold text-gray-800 border-x-2 border-gray-100 min-w-[46px] text-center">
+        {qty}
+      </span>
+      <button
+        onClick={() => setQty((q) => q + 1)}
+        className="qty-btn px-4 py-2.5 text-gray-500 text-xl font-light select-none"
+      >
+        +
+      </button>
     </div>
   );
 };
@@ -234,7 +265,13 @@ const CHIPS = [
    Toast Notification
 ───────────────────────────────────────────── */
 const Toast = ({ message, type = "success" }) => (
-  <div className={`toast fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-3 rounded-2xl shadow-xl text-white text-sm font-semibold ${type === "success" ? "bg-gradient-to-r from-green-500 to-emerald-600" : "bg-gradient-to-r from-orange-500 to-red-500"}`}>
+  <div
+    className={`toast fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-3 rounded-2xl shadow-xl text-white text-sm font-semibold ${
+      type === "success"
+        ? "bg-gradient-to-r from-green-500 to-emerald-600"
+        : "bg-gradient-to-r from-orange-500 to-red-500"
+    }`}
+  >
     <span>{type === "success" ? "✓" : "♥"}</span>
     {message}
   </div>
@@ -248,7 +285,12 @@ const RelatedCard = ({ p, nav, delay }) => {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
     const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
       { threshold: 0.12 }
     );
     if (ref.current) obs.observe(ref.current);
@@ -256,17 +298,41 @@ const RelatedCard = ({ p, nav, delay }) => {
   }, []);
 
   return (
-    <div ref={ref} style={visible ? { animation: `fadeUp 0.5s ease ${delay}ms both` } : { opacity: 0 }}>
-      <div className="prod-card bg-white rounded-2xl border border-gray-100 overflow-hidden cursor-pointer" onClick={() => nav(`/product/${p._id}`)}>
+    <div
+      ref={ref}
+      style={
+        visible
+          ? { animation: `fadeUp 0.5s ease ${delay}ms both` }
+          : { opacity: 0 }
+      }
+    >
+      <div
+        className="prod-card bg-white rounded-2xl border border-gray-100 overflow-hidden cursor-pointer"
+        onClick={() => nav(`/product/${p._id}`)}
+      >
         <div className="bg-gradient-to-br from-gray-50 to-white h-44 flex items-center justify-center p-3 overflow-hidden">
-          <img src={p.image} alt={p.title} className="card-img h-36 w-full object-contain" />
+          <img
+            src={p.image}
+            alt={p.title}
+            className="card-img h-36 w-full object-contain"
+          />
         </div>
         <div className="p-3.5">
-          {p.brand && <p className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">{p.brand}</p>}
-          <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug mb-2">{p.title}</h3>
+          {p.brand && (
+            <p className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">
+              {p.brand}
+            </p>
+          )}
+          <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug mb-2">
+            {p.title}
+          </h3>
           <div className="flex items-center justify-between">
-            <span className="text-orange-500 font-extrabold text-sm">Rs. {p.price?.toLocaleString()}</span>
-            <span className="text-[10px] bg-orange-50 text-orange-400 font-bold px-2 py-0.5 rounded-full border border-orange-100">View →</span>
+            <span className="text-orange-500 font-extrabold text-sm">
+              Rs. {p.price?.toLocaleString()}
+            </span>
+            <span className="text-[10px] bg-orange-50 text-orange-400 font-bold px-2 py-0.5 rounded-full border border-orange-100">
+              View →
+            </span>
           </div>
         </div>
       </div>
@@ -290,12 +356,34 @@ const Product = () => {
   const [cartAdded, setCartAdded] = useState(false);
   const [toast, setToast] = useState(null);
   const [activeTab, setActiveTab] = useState("description");
+  const [cart, setcart] = useState([]);
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3000);
   };
 
+  const cartfetch = async (item) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/cart",
+        {
+          product: item._id,
+          quantity: 1,
+        },
+        { withCredentials: true }
+      );
+
+      console.log("Cart Response:", res.data);
+
+      setcart(res.data.cart.itemL);
+
+      setTimeout(() => setcart(false), 2500);
+    } catch (error) {
+      console.log("Add to cart error:", error.response?.data || error.message);
+      showToast("Failed to add to cart", "error");
+    }
+  };
   const fetchProductId = async () => {
     try {
       const res = await axios.get(`http://localhost:8000/api/gets/${id}`);
@@ -311,7 +399,9 @@ const Product = () => {
     try {
       const res = await axios.get("http://localhost:8000/api/get");
       setProducts(res.data.product);
-    } catch (error) { console.log(error); }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -321,37 +411,48 @@ const Product = () => {
   }, [id]);
 
   const handleWishlist = () => {
-    setWishlisted(w => !w);
+    setWishlisted((w) => !w);
     setHeartAnim(true);
     setTimeout(() => setHeartAnim(false), 400);
-    showToast(wishlisted ? "Removed from wishlist" : "Added to wishlist ♥", wishlisted ? "success" : "wish");
+    showToast(
+      wishlisted ? "Removed from wishlist" : "Added to wishlist ♥",
+      wishlisted ? "success" : "wish"
+    );
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (item) => {
+    
     setCartAdded(true);
+     cartfetch(item)
     showToast("Added to cart successfully!");
-    setTimeout(() => setCartAdded(false), 2500);
+    setTimeout(() => setcart(false), 2500);
+    nav("/cart")
   };
 
-  if (loading) return (
-    <>
-      <style>{GLOBAL_STYLES}</style>
-      <SkeletonLoader />
-    </>
-  );
+  if (loading)
+    return (
+      <>
+        <style>{GLOBAL_STYLES}</style>
+        <SkeletonLoader />
+      </>
+    );
 
-  if (!data || data.length === 0) return (
-    <>
-      <style>{GLOBAL_STYLES}</style>
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
-        <div className="text-6xl">😕</div>
-        <h2 className="text-xl font-bold text-gray-700">Product not found</h2>
-        <button onClick={() => nav(-1)} className="btn-buy text-white font-bold px-6 py-3 rounded-2xl text-sm">
-          ← Go Back
-        </button>
-      </div>
-    </>
-  );
+  if (!data || data.length === 0)
+    return (
+      <>
+        <style>{GLOBAL_STYLES}</style>
+        <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+          <div className="text-6xl">😕</div>
+          <h2 className="text-xl font-bold text-gray-700">Product not found</h2>
+          <button
+            onClick={() => nav(-1)}
+            className="btn-buy text-white font-bold px-6 py-3 rounded-2xl text-sm"
+          >
+            ← Go Back
+          </button>
+        </div>
+      </>
+    );
 
   return (
     <>
@@ -362,17 +463,28 @@ const Product = () => {
         {data.map((item) => {
           const images = item.images?.length > 0 ? item.images : [item.image];
           const discount = item.originalPrice
-            ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)
+            ? Math.round(
+                ((item.originalPrice - item.price) / item.originalPrice) * 100
+              )
             : null;
 
           return (
             <div key={item._id} className="anim-fade-in">
-
               {/* Breadcrumb */}
               <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-5 anim-fade-up">
-                <span className="hover:text-orange-500 cursor-pointer transition-colors" onClick={() => nav("/")}>Home</span>
+                <span
+                  className="hover:text-orange-500 cursor-pointer transition-colors"
+                  onClick={() => nav("/")}
+                >
+                  Home
+                </span>
                 <span className="text-gray-300">/</span>
-                <span className="hover:text-orange-500 cursor-pointer transition-colors" onClick={() => nav(-1)}>Products</span>
+                <span
+                  className="hover:text-orange-500 cursor-pointer transition-colors"
+                  onClick={() => nav(-1)}
+                >
+                  Products
+                </span>
                 <span className="text-gray-300">/</span>
                 {item.category?.title && (
                   <>
@@ -380,15 +492,15 @@ const Product = () => {
                     <span className="text-gray-300">/</span>
                   </>
                 )}
-                <span className="text-gray-700 font-semibold truncate max-w-[180px]">{item.title}</span>
+                <span className="text-gray-700 font-semibold truncate max-w-[180px]">
+                  {item.title}
+                </span>
               </nav>
 
               {/* Main Card */}
               <div className="flex flex-col lg:flex-row gap-0 bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden">
-
                 {/* ── LEFT: Image Panel ── */}
                 <div className="lg:w-[45%] p-5 flex flex-col gap-3 anim-slide-left bg-gradient-to-br from-white to-orange-50/30">
-
                   {/* Badges */}
                   <div className="flex items-center gap-2 flex-wrap">
                     {discount && (
@@ -411,9 +523,20 @@ const Product = () => {
                     {/* Wishlist */}
                     <button
                       onClick={handleWishlist}
-                      className={`heart-btn ${heartAnim ? "popped" : ""} absolute top-3 right-3 z-10 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md border border-gray-100`}
+                      className={`heart-btn ${
+                        heartAnim ? "popped" : ""
+                      } absolute top-3 right-3 z-10 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md border border-gray-100`}
                     >
-                      <svg className={`w-5 h-5 transition-all ${wishlisted ? "text-red-500 fill-red-500" : "text-gray-300 fill-none"}`} viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <svg
+                        className={`w-5 h-5 transition-all ${
+                          wishlisted
+                            ? "text-red-500 fill-red-500"
+                            : "text-gray-300 fill-none"
+                        }`}
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                       </svg>
                     </button>
@@ -424,7 +547,12 @@ const Product = () => {
                       pagination={{ clickable: true }}
                       autoplay={{ delay: 3500, disableOnInteraction: false }}
                       loop={images.length > 1}
-                      thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
+                      thumbs={{
+                        swiper:
+                          thumbsSwiper && !thumbsSwiper.destroyed
+                            ? thumbsSwiper
+                            : null,
+                      }}
                       className="prod-main-swiper"
                     >
                       {images.map((img, idx) => (
@@ -452,7 +580,11 @@ const Product = () => {
                       {images.map((img, idx) => (
                         <SwiperSlide key={idx}>
                           <div className="thumb-wrap border-2 border-gray-100 rounded-xl overflow-hidden cursor-pointer hover:border-orange-300 transition-all duration-200 bg-white">
-                            <img src={img} alt={`thumb-${idx}`} className="w-full h-[62px] object-contain p-1" />
+                            <img
+                              src={img}
+                              alt={`thumb-${idx}`}
+                              className="w-full h-[62px] object-contain p-1"
+                            />
                           </div>
                         </SwiperSlide>
                       ))}
@@ -462,9 +594,14 @@ const Product = () => {
                   {/* Trust chips */}
                   <div className="grid grid-cols-2 gap-2 mt-1">
                     {CHIPS.map((c, i) => (
-                      <div key={i} className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 border border-gray-100 shadow-sm">
+                      <div
+                        key={i}
+                        className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 border border-gray-100 shadow-sm"
+                      >
                         <span className="text-base">{c.icon}</span>
-                        <span className="text-[11px] text-gray-600 font-semibold">{c.label}</span>
+                        <span className="text-[11px] text-gray-600 font-semibold">
+                          {c.label}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -472,7 +609,6 @@ const Product = () => {
 
                 {/* ── RIGHT: Details Panel ── */}
                 <div className="lg:w-[55%] p-6 sm:p-8 flex flex-col justify-start gap-5 lg:border-l border-gray-100 anim-slide-right">
-
                   {/* Brand */}
                   {item.brand && (
                     <span className="anim-fade-up d-100 inline-flex w-fit items-center gap-1.5 text-xs font-extrabold text-orange-500 uppercase tracking-widest bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
@@ -505,7 +641,8 @@ const Product = () => {
                           Rs. {item.originalPrice.toLocaleString()}
                         </span>
                         <span className="disc-badge text-xs font-extrabold text-white bg-gradient-to-r from-red-500 to-orange-500 px-2.5 py-0.5 rounded-full">
-                          Save Rs. {(item.originalPrice - item.price).toLocaleString()}
+                          Save Rs.{" "}
+                          {(item.originalPrice - item.price).toLocaleString()}
                         </span>
                       </div>
                     )}
@@ -514,11 +651,15 @@ const Product = () => {
                   {/* Tabs: Description / Details */}
                   <div className="anim-fade-up d-400">
                     <div className="flex gap-5 border-b border-gray-100 text-sm font-semibold text-gray-400">
-                      {["description", "details"].map(tab => (
+                      {["description", "details"].map((tab) => (
                         <button
                           key={tab}
                           onClick={() => setActiveTab(tab)}
-                          className={`pb-2 capitalize transition-colors ${activeTab === tab ? "text-orange-500 tab-active" : "hover:text-gray-600"}`}
+                          className={`pb-2 capitalize transition-colors ${
+                            activeTab === tab
+                              ? "text-orange-500 tab-active"
+                              : "hover:text-gray-600"
+                          }`}
                         >
                           {tab}
                         </button>
@@ -528,22 +669,46 @@ const Product = () => {
                     <div className="mt-3">
                       {activeTab === "description" ? (
                         <p className="text-gray-500 text-sm leading-relaxed border-l-2 border-orange-200 pl-3">
-                          {item.description || "No description available for this product."}
+                          {item.description ||
+                            "No description available for this product."}
                         </p>
                       ) : (
                         <div className="grid grid-cols-2 gap-3 text-sm">
                           {[
                             { label: "Code", val: item.code },
-                            { label: "Category", val: item.category?.title, truncate: true },
-                            item.scent  && { label: "Scent",  val: item.scent },
-                            item.volume && { label: "Volume", val: item.volume },
-                            item.discounted && { label: "Discount", val: `${item.discounted}%` },
-                          ].filter(Boolean).map((m, i) => (
-                            <div key={i} className="bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-100">
-                              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-0.5">{m.label}</p>
-                              <p className={`font-bold text-gray-800 text-sm ${m.truncate ? "truncate" : ""}`}>{m.val}</p>
-                            </div>
-                          ))}
+                            {
+                              label: "Category",
+                              val: item.category?.title,
+                              truncate: true,
+                            },
+                            item.scent && { label: "Scent", val: item.scent },
+                            item.volume && {
+                              label: "Volume",
+                              val: item.volume,
+                            },
+                            item.discounted && {
+                              label: "Discount",
+                              val: `${item.discounted}%`,
+                            },
+                          ]
+                            .filter(Boolean)
+                            .map((m, i) => (
+                              <div
+                                key={i}
+                                className="bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-100"
+                              >
+                                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-0.5">
+                                  {m.label}
+                                </p>
+                                <p
+                                  className={`font-bold text-gray-800 text-sm ${
+                                    m.truncate ? "truncate" : ""
+                                  }`}
+                                >
+                                  {m.val}
+                                </p>
+                              </div>
+                            ))}
                         </div>
                       )}
                     </div>
@@ -554,37 +719,71 @@ const Product = () => {
 
                   {/* Delivery Banner */}
                   <div className="anim-fade-up d-400 bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-4 flex items-center gap-4 border border-orange-100">
-                    <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center text-2xl shadow-sm border border-orange-100 flex-shrink-0">🚚</div>
+                    <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center text-2xl shadow-sm border border-orange-100 flex-shrink-0">
+                      🚚
+                    </div>
                     <div>
-                      <p className="font-extrabold text-gray-800 text-sm">Standard Delivery · 3–5 Days</p>
-                      <p className="text-gray-500 text-xs mt-0.5">Cash on Delivery &amp; Online Payment Available</p>
+                      <p className="font-extrabold text-gray-800 text-sm">
+                        Standard Delivery · 3–5 Days
+                      </p>
+                      <p className="text-gray-500 text-xs mt-0.5">
+                        Cash on Delivery &amp; Online Payment Available
+                      </p>
                     </div>
                   </div>
 
                   {/* Quantity + Buttons */}
                   <div className="anim-fade-up d-500 flex flex-col gap-3">
                     <div className="flex items-center gap-4">
-                      <span className="text-sm text-gray-500 font-medium w-20">Quantity</span>
+                      <span className="text-sm text-gray-500 font-medium w-20">
+                        Quantity
+                      </span>
                       <QuantitySelector />
                     </div>
 
                     <div className="flex gap-3">
                       <button className="btn-buy flex-1 text-white font-extrabold py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                          />
                         </svg>
                         Buy Now
                       </button>
                       <button
-                        onClick={()=>nav("/cart")}
-                        className={`btn-cart ${cartAdded ? "added" : "border-orange-400 text-orange-500"} flex-1 border-2 font-extrabold py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2`}
+                        onClick={() => handleAddToCart(item)}
+                        className={`btn-cart ${
+                          cartAdded
+                            ? "added"
+                            : "border-orange-400 text-orange-500"
+                        } flex-1 border-2 font-extrabold py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2`}
                       >
                         {cartAdded ? (
-                          <><span className="text-base">✓</span> Added!</>
+                          <>
+                            <span className="text-base">✓</span> Added!
+                          </>
                         ) : (
                           <>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21h6" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21h6"
+                              />
                             </svg>
                             Add to Cart
                           </>
@@ -595,15 +794,30 @@ const Product = () => {
                     {/* Return + Share row */}
                     <div className="flex items-center justify-between">
                       <p className="text-xs text-gray-400 flex items-center gap-1.5">
-                        <span className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center text-[10px]">🔄</span>
+                        <span className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center text-[10px]">
+                          🔄
+                        </span>
                         14 Days Free Returns · No Questions Asked
                       </p>
                       <button
-                        onClick={() => { navigator.clipboard?.writeText(window.location.href); showToast("Link copied!"); }}
+                        onClick={() => {
+                          navigator.clipboard?.writeText(window.location.href);
+                          showToast("Link copied!");
+                        }}
                         className="text-xs text-gray-400 hover:text-orange-500 transition-colors flex items-center gap-1"
                       >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                          />
                         </svg>
                         Share
                       </button>
@@ -617,9 +831,16 @@ const Product = () => {
                 <div className="mt-14">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="h-6 w-1 bg-gradient-to-b from-orange-500 to-red-400 rounded-full" />
-                    <h2 className="text-xl font-extrabold text-gray-900">More Products</h2>
+                    <h2 className="text-xl font-extrabold text-gray-900">
+                      More Products
+                    </h2>
                     <div className="flex-1 h-px bg-gradient-to-r from-gray-100 to-transparent" />
-                    <button onClick={() => nav("/")} className="text-xs font-bold text-orange-500 hover:underline">View All →</button>
+                    <button
+                      onClick={() => nav("/")}
+                      className="text-xs font-bold text-orange-500 hover:underline"
+                    >
+                      View All →
+                    </button>
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">

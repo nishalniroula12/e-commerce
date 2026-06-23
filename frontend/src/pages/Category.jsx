@@ -2,7 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay, Thumbs, EffectFade } from "swiper/modules";
+import {
+  Navigation,
+  Pagination,
+  Autoplay,
+  Thumbs,
+  EffectFade,
+} from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -176,7 +182,9 @@ const SkeletonLoader = () => (
         <div className="skeleton h-10 w-40 rounded" />
         <div className="skeleton h-20 w-full rounded" />
         <div className="grid grid-cols-2 gap-3 mt-2">
-          {[...Array(4)].map((_, i) => <div key={i} className="skeleton h-10 rounded" />)}
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="skeleton h-10 rounded" />
+          ))}
         </div>
         <div className="flex gap-3 mt-4">
           <div className="skeleton h-12 flex-1 rounded-xl" />
@@ -197,12 +205,25 @@ const StarRating = ({ rating = 0 }) => {
     <div className="flex items-center gap-1.5">
       <div className="flex gap-0.5">
         {[...Array(5)].map((_, i) => (
-          <svg key={i} className={`w-4 h-4 ${i < full ? "text-amber-400" : i === full && half ? "text-amber-300" : "text-gray-200"}`} fill="currentColor" viewBox="0 0 20 20">
+          <svg
+            key={i}
+            className={`w-4 h-4 ${
+              i < full
+                ? "text-amber-400"
+                : i === full && half
+                ? "text-amber-300"
+                : "text-gray-200"
+            }`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
           </svg>
         ))}
       </div>
-      <span className="text-sm text-gray-500 font-medium">{rating ? `${rating}/5` : "No ratings yet"}</span>
+      <span className="text-sm text-gray-500 font-medium">
+        {rating ? `${rating}/5` : "No ratings yet"}
+      </span>
     </div>
   );
 };
@@ -215,16 +236,20 @@ const QuantitySelector = () => {
   return (
     <div className="flex items-center border-2 border-gray-100 rounded-xl overflow-hidden bg-white shadow-sm">
       <button
-        onClick={() => setQty(q => Math.max(1, q - 1))}
+        onClick={() => setQty((q) => Math.max(1, q - 1))}
         className="qty-btn px-4 py-2.5 text-gray-500 text-xl font-light leading-none select-none"
-      >−</button>
+      >
+        −
+      </button>
       <span className="px-5 py-2.5 text-sm font-bold text-gray-800 border-x-2 border-gray-100 min-w-[48px] text-center">
         {qty}
       </span>
       <button
-        onClick={() => setQty(q => q + 1)}
+        onClick={() => setQty((q) => q + 1)}
         className="qty-btn px-4 py-2.5 text-gray-500 text-xl font-light leading-none select-none"
-      >+</button>
+      >
+        +
+      </button>
     </div>
   );
 };
@@ -248,7 +273,12 @@ const RelatedCard = ({ p, nav, delay }) => {
 
   useEffect(() => {
     const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
       { threshold: 0.15 }
     );
     if (ref.current) obs.observe(ref.current);
@@ -259,21 +289,35 @@ const RelatedCard = ({ p, nav, delay }) => {
     <div
       ref={ref}
       className="related-card-wrapper"
-      style={visible ? { animation: `fadeUp 0.5s ease ${delay}ms forwards` } : {}}
+      style={
+        visible ? { animation: `fadeUp 0.5s ease ${delay}ms forwards` } : {}
+      }
     >
       <div
         className="product-card bg-white rounded-2xl border border-gray-100 overflow-hidden cursor-pointer group"
         onClick={() => nav(`/product/${p._id}`)}
       >
         <div className="overflow-hidden bg-gray-50 h-44 flex items-center justify-center p-3">
-          <img src={p.image} alt={p.title} className="card-img h-36 w-full object-contain" />
+          <img
+            src={p.image}
+            alt={p.title}
+            className="card-img h-36 w-full object-contain"
+          />
         </div>
         <div className="p-3">
-          <p className="text-xs text-orange-500 font-semibold uppercase tracking-wide mb-1">{p.brand || "Product"}</p>
-          <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug mb-2">{p.title}</h3>
+          <p className="text-xs text-orange-500 font-semibold uppercase tracking-wide mb-1">
+            {p.brand || "Product"}
+          </p>
+          <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug mb-2">
+            {p.title}
+          </h3>
           <div className="flex items-center justify-between">
-            <span className="text-orange-500 font-bold text-sm">Rs. {p.price?.toLocaleString()}</span>
-            <span className="text-[10px] bg-orange-50 text-orange-400 font-semibold px-2 py-0.5 rounded-full">View →</span>
+            <span className="text-orange-500 font-bold text-sm">
+              Rs. {p.price?.toLocaleString()}
+            </span>
+            <span className="text-[10px] bg-orange-50 text-orange-400 font-semibold px-2 py-0.5 rounded-full">
+              View →
+            </span>
           </div>
         </div>
       </div>
@@ -290,22 +334,47 @@ const Category = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [wishlisted, setWishlisted] = useState(false);
   const [cartAdded, setCartAdded] = useState(false);
+  const [cart, setcart] = useState([]);
   const { id } = useParams();
   const nav = useNavigate();
 
-  const fetchCategoryId = async () => {
+  const cartfetch = async (item) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/cart",
+        {
+          product: item._id,
+          quantity: 1,
+        },
+        { withCredentials: true }
+      );
+
+      console.log("Cart Response:", res.data);
+
+      setcart(res.data.cart.itemL);
+
+      setTimeout(() => setcart(false), 2500);
+    } catch (error) {
+      console.log("Add to cart error:", error.response?.data || error.message);
+    }
+  };
+ const fetchCategoryId = async () => {
     try {
       const res = await axios.get(`http://localhost:8000/api/system/${id}`);
       const categoryData = res.data.category;
       setCategory(Array.isArray(categoryData) ? categoryData : [categoryData]);
-    } catch (error) { console.log(error); }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const productfetchdata = async () => {
     try {
       const res = await axios.get("http://localhost:8000/api/get");
       setdata(res.data.product);
-    } catch (error) { console.log(error); }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -314,17 +383,20 @@ const Category = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [id]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (item) => {
     setCartAdded(true);
-    setTimeout(() => setCartAdded(false), 2000);
+cartfetch(item)
+    setTimeout(() => setcart(false), 2000);
+    nav("/cart");
   };
 
-  if (data.length === 0) return (
-    <>
-      <style>{GLOBAL_STYLES}</style>
-      <SkeletonLoader />
-    </>
-  );
+  if (data.length === 0)
+    return (
+      <>
+        <style>{GLOBAL_STYLES}</style>
+        <SkeletonLoader />
+      </>
+    );
 
   return (
     <>
@@ -333,7 +405,9 @@ const Category = () => {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {data.map((item) => {
           const discount = item.originalPrice
-            ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)
+            ? Math.round(
+                ((item.originalPrice - item.price) / item.originalPrice) * 100
+              )
             : null;
           const images = item.images?.length > 0 ? item.images : [item.image];
 
@@ -341,16 +415,27 @@ const Category = () => {
             <div key={item._id} className="animate-scale-in">
               {/* ── Breadcrumb ── */}
               <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-5 animate-fade-in">
-                <span className="hover:text-orange-500 cursor-pointer transition-colors" onClick={() => nav("/")}>Home</span>
+                <span
+                  className="hover:text-orange-500 cursor-pointer transition-colors"
+                  onClick={() => nav("/")}
+                >
+                  Home
+                </span>
                 <span>/</span>
-                <span className="hover:text-orange-500 cursor-pointer transition-colors" onClick={() => nav(-1)}>Products</span>
+                <span
+                  className="hover:text-orange-500 cursor-pointer transition-colors"
+                  onClick={() => nav(-1)}
+                >
+                  Products
+                </span>
                 <span>/</span>
-                <span className="text-gray-700 font-medium truncate max-w-[180px]">{item.title}</span>
+                <span className="text-gray-700 font-medium truncate max-w-[180px]">
+                  {item.title}
+                </span>
               </nav>
 
               {/* ── Main Card ── */}
               <div className="flex flex-col lg:flex-row gap-6 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-
                 {/* LEFT: Images */}
                 <div className="lg:w-[45%] p-5 flex flex-col gap-3 animate-slide-left">
                   {/* Badge row */}
@@ -369,22 +454,42 @@ const Category = () => {
                   <div className="rounded-2xl overflow-hidden border border-gray-100 bg-gradient-to-br from-gray-50 to-white shadow-inner relative">
                     {/* Wishlist button */}
                     <button
-                      onClick={() => setWishlisted(w => !w)}
+                      onClick={() => setWishlisted((w) => !w)}
                       className="absolute top-3 right-3 z-10 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-md border border-gray-100 transition-all hover:scale-110 active:scale-90"
                       style={{ transition: "transform 0.18s" }}
                     >
-                      <svg className={`w-4.5 h-4.5 ${wishlisted ? "text-red-500 fill-red-500" : "text-gray-300 fill-none"}`} viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <svg
+                        className={`w-4.5 h-4.5 ${
+                          wishlisted
+                            ? "text-red-500 fill-red-500"
+                            : "text-gray-300 fill-none"
+                        }`}
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                       </svg>
                     </button>
 
                     <Swiper
-                      modules={[Navigation, Pagination, Autoplay, Thumbs, EffectFade]}
+                      modules={[
+                        Navigation,
+                        Pagination,
+                        Autoplay,
+                        Thumbs,
+                        EffectFade,
+                      ]}
                       navigation
                       pagination={{ clickable: true }}
                       autoplay={{ delay: 3500, disableOnInteraction: false }}
                       loop={images.length > 1}
-                      thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
+                      thumbs={{
+                        swiper:
+                          thumbsSwiper && !thumbsSwiper.destroyed
+                            ? thumbsSwiper
+                            : null,
+                      }}
                       className="main-swiper"
                     >
                       {images.map((img, idx) => (
@@ -412,7 +517,11 @@ const Category = () => {
                       {images.map((img, idx) => (
                         <SwiperSlide key={idx}>
                           <div className="thumb-img-wrap border-2 border-gray-100 rounded-xl overflow-hidden cursor-pointer hover:border-orange-300 transition-all duration-200 bg-gray-50">
-                            <img src={img} alt={`thumb-${idx}`} className="w-full h-[64px] object-contain p-1" />
+                            <img
+                              src={img}
+                              alt={`thumb-${idx}`}
+                              className="w-full h-[64px] object-contain p-1"
+                            />
                           </div>
                         </SwiperSlide>
                       ))}
@@ -422,9 +531,14 @@ const Category = () => {
                   {/* Feature chips */}
                   <div className="grid grid-cols-2 gap-2 mt-1">
                     {chips.map((c, i) => (
-                      <div key={i} className="flex items-center gap-1.5 bg-gray-50 rounded-xl px-3 py-2 border border-gray-100">
+                      <div
+                        key={i}
+                        className="flex items-center gap-1.5 bg-gray-50 rounded-xl px-3 py-2 border border-gray-100"
+                      >
                         <span className="text-base">{c.icon}</span>
-                        <span className="text-[11px] text-gray-600 font-medium">{c.label}</span>
+                        <span className="text-[11px] text-gray-600 font-medium">
+                          {c.label}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -432,7 +546,6 @@ const Category = () => {
 
                 {/* RIGHT: Details */}
                 <div className="lg:w-[55%] p-6 flex flex-col justify-start gap-4 lg:border-l border-gray-100 animate-slide-right">
-
                   {/* Brand */}
                   {item.brand && (
                     <span className="inline-flex w-fit items-center gap-1 text-xs font-bold text-orange-500 uppercase tracking-widest bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
@@ -462,7 +575,8 @@ const Category = () => {
                           Rs. {item.originalPrice.toLocaleString()}
                         </span>
                         <span className="discount-badge text-xs font-bold text-white bg-gradient-to-r from-red-500 to-orange-500 px-2 py-0.5 rounded-full">
-                          Save Rs. {(item.originalPrice - item.price).toLocaleString()}
+                          Save Rs.{" "}
+                          {(item.originalPrice - item.price).toLocaleString()}
                         </span>
                       </div>
                     )}
@@ -480,12 +594,25 @@ const Category = () => {
                       { label: "Category ID", val: item._id, truncate: true },
                       item.scent && { label: "Scent", val: item.scent },
                       item.volume && { label: "Volume", val: item.volume },
-                    ].filter(Boolean).map((m, i) => (
-                      <div key={i} className="bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-100">
-                        <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide mb-0.5">{m.label}</p>
-                        <p className={`font-bold text-gray-800 text-sm ${m.truncate ? "truncate" : ""}`}>{m.val}</p>
-                      </div>
-                    ))}
+                    ]
+                      .filter(Boolean)
+                      .map((m, i) => (
+                        <div
+                          key={i}
+                          className="bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-100"
+                        >
+                          <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide mb-0.5">
+                            {m.label}
+                          </p>
+                          <p
+                            className={`font-bold text-gray-800 text-sm ${
+                              m.truncate ? "truncate" : ""
+                            }`}
+                          >
+                            {m.val}
+                          </p>
+                        </div>
+                      ))}
                   </div>
 
                   <div className="h-px bg-gradient-to-r from-orange-100 via-gray-100 to-transparent" />
@@ -496,35 +623,65 @@ const Category = () => {
                       🚚
                     </div>
                     <div>
-                      <p className="font-bold text-gray-800 text-sm">Standard Delivery · 3–5 days</p>
-                      <p className="text-gray-500 text-xs mt-0.5">Cash on Delivery &amp; Online Payment Available</p>
+                      <p className="font-bold text-gray-800 text-sm">
+                        Standard Delivery · 3–5 days
+                      </p>
+                      <p className="text-gray-500 text-xs mt-0.5">
+                        Cash on Delivery &amp; Online Payment Available
+                      </p>
                     </div>
                   </div>
 
                   {/* Quantity + CTA */}
                   <div className="flex flex-col gap-3 mt-1">
                     <div className="flex items-center gap-4">
-                      <span className="text-sm text-gray-500 font-medium">Quantity</span>
+                      <span className="text-sm text-gray-500 font-medium">
+                        Quantity
+                      </span>
                       <QuantitySelector />
                     </div>
 
                     <div className="flex gap-3">
                       <button className="btn-primary flex-1 text-white font-bold py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                          <path d="M13 10V3L4 14h7v7l9-11h-7z" strokeLinecap="round" strokeLinejoin="round" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                         Buy Now
                       </button>
                       <button
-                        onClick={handleAddToCart}
-                        className={`btn-outline flex-1 border-2 font-bold py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2 transition-all ${cartAdded ? "border-green-500 text-green-600 bg-green-50" : "border-orange-400 text-orange-500"}`}
+                        onClick={() => handleAddToCart(item._id)}
+                        className={`btn-outline flex-1 border-2 font-bold py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2 transition-all ${
+                          cartAdded
+                            ? "border-green-500 text-green-600 bg-green-50"
+                            : "border-orange-400 text-orange-500"
+                        }`}
                       >
                         {cartAdded ? (
                           <>✓ Added!</>
                         ) : (
                           <>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                              <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21h6" strokeLinecap="round" strokeLinejoin="round" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21h6"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
                             </svg>
                             Add to Cart
                           </>
@@ -535,7 +692,9 @@ const Category = () => {
 
                   {/* Return policy */}
                   <p className="text-xs text-gray-400 flex items-center gap-1.5">
-                    <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[10px]">🔄</span>
+                    <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[10px]">
+                      🔄
+                    </span>
                     14 Days Free Returns · No Questions Asked
                   </p>
                 </div>
@@ -546,7 +705,9 @@ const Category = () => {
                 <div className="mt-14">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="h-6 w-1 bg-gradient-to-b from-orange-500 to-red-400 rounded-full" />
-                    <h2 className="text-xl font-extrabold text-gray-900">More Products</h2>
+                    <h2 className="text-xl font-extrabold text-gray-900">
+                      More Products
+                    </h2>
                     <div className="flex-1 h-px bg-gradient-to-r from-gray-100 to-transparent" />
                   </div>
 

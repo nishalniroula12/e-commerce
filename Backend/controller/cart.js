@@ -135,5 +135,47 @@ export const updatecart = async (req, res) => {
       message: error.message,
     });
   }
+
+};
+export const removeFromCart = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { productid } = req.params;
+
+    const cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      return res.status(404).json({
+        success: false,
+        message: "Cart not found",
+      });
+    }
+
+    cart.itemL = cart.itemL.filter(
+      (item) => item.product.toString() !== productid
+    );
+
+    cart.totalitems = cart.itemL.reduce(
+      (sum, i) => sum + i.quantity,
+      0
+    );
+
+    cart.totalamount = cart.itemL.reduce(
+      (sum, i) => sum + i.price * i.quantity,
+      0
+    );
+
+    await cart.save();
+
+    res.json({
+      success: true,
+      cart,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
 
