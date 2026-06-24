@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 import {
 
   removecart,
@@ -8,6 +7,7 @@ import {
   selectCartTotal,
   selectCartItemCount,
 } from "../Redux/api";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -16,6 +16,7 @@ const Cart = () => {
   console.log(items)
   const total = useSelector(selectCartTotal);
   const count = useSelector(selectCartItemCount);
+  const nav=useNavigate()
 
  
 
@@ -147,7 +148,7 @@ const Cart = () => {
         <div className="mt-6 flex justify-end">
           <button
           onClick={()=>nav('/checkout')} className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition">
-            🔒 Proceed to Checkout
+            🔒 Proceed to Checkout  
           </button>
         </div>
       )}

@@ -6,7 +6,7 @@ const router=express.Router()
 
 router.post("/product" ,upload.single("image") ,authenticate,productcreate)
 router.get("/get" ,publicdata)
-router.get("/gets/:id", databyid)
+router.get("/gets/:id",databyid)
 router.delete("/remove/:id",niskenabelavayo)
 router.put("/levelup/:id" ,upload.single("image"), updateone)
 

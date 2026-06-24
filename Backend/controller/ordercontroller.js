@@ -1,9 +1,13 @@
+import Cart from '../models/cart.js'
+import Order from '../models/orders.js';
+
 export const createOrder = async (req, res) => {
   try {
     const { shippingAddress, paymentMethod } = req.body;
     const user = req.user._id;
 
-    const cart = await Cart.findOne({ user }).populate("itemL.product");
+    const cart = await Cart.findOne({ user:req.user._id }).populate("itemL.product");
+    console.log(cart)
 
     if (!cart || cart.itemL.length === 0) {
       return res.status(400).json({
@@ -43,7 +47,8 @@ export const createOrder = async (req, res) => {
     }
 
     const order = await Order.create({
-      user,
+      user:req.user._id,
+      itemL:[],
       items: orderItems,
       totalAmount,
       shippingAddress,
