@@ -13,6 +13,9 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
+import { useDispatch } from "react-redux";
+import { addtocart } from "../Redux/api.js";
+
 
 /* ─────────────────────────────────────────────
    Inline keyframe styles injected once
@@ -334,31 +337,12 @@ const Category = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [wishlisted, setWishlisted] = useState(false);
   const [cartAdded, setCartAdded] = useState(false);
-  const [cart, setcart] = useState([]);
+ // const [cart, setcart] = useState([]);
   const { id } = useParams();
   const nav = useNavigate();
+  const dispatch =useDispatch()
 
-  const cartfetch = async (item) => {
-    try {
-      const res = await axios.post(
-        "http://localhost:8000/api/cart",
-        {
-          product: item._id,
-          quantity: 1,
-        },
-        { withCredentials: true }
-      );
-
-      console.log("Cart Response:", res.data);
-
-      setcart(res.data.cart.itemL);
-
-      setTimeout(() => setcart(false), 2500);
-    } catch (error) {
-      console.log("Add to cart error:", error.response?.data || error.message);
-    }
-  };
- const fetchCategoryId = async () => {
+   const fetchCategoryId = async () => {
     try {
       const res = await axios.get(`http://localhost:8000/api/system/${id}`);
       const categoryData = res.data.category;
@@ -385,8 +369,14 @@ const Category = () => {
 
   const handleAddToCart = (item) => {
     setCartAdded(true);
-cartfetch(item)
-    setTimeout(() => setcart(false), 2000);
+dispatch(
+  addtocart({
+    product: item,
+    quantity: 1,
+  })
+);
+
+
     nav("/cart");
   };
 
@@ -659,7 +649,7 @@ cartfetch(item)
                         Buy Now
                       </button>
                       <button
-                        onClick={() => handleAddToCart(item._id)}
+                        onClick={() => handleAddToCart(item)}
                         className={`btn-outline flex-1 border-2 font-bold py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2 transition-all ${
                           cartAdded
                             ? "border-green-500 text-green-600 bg-green-50"

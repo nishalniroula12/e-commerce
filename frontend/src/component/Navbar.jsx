@@ -466,14 +466,6 @@ const Navbar = () => {
                     </NavLink>
                     
                     )}
-
-<div className="nav-links" style={{ gap: 8 }}>
-                      <NavLink to="/login" className="btn-login">
-                        Log in
-                      </NavLink>
-                      </div>
-                  
-
                     {/* You can also show Home shortcut if you want */}
                     
                     {/* Cart still visible for logged users */}

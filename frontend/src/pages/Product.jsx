@@ -14,6 +14,8 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/thumbs";
 import "swiper/css/effect-fade";
+import { addtocart } from "../Redux/api.js";
+import { useDispatch } from "react-redux";
 
 /* ─────────────────────────────────────────────
    Global Styles & Animations
@@ -356,34 +358,35 @@ const Product = () => {
   const [cartAdded, setCartAdded] = useState(false);
   const [toast, setToast] = useState(null);
   const [activeTab, setActiveTab] = useState("description");
-  const [cart, setcart] = useState([]);
+  // const [cart, setcart] = useState([]);
+  const dispatch = useDispatch()
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3000);
   };
 
-  const cartfetch = async (item) => {
-    try {
-      const res = await axios.post(
-        "http://localhost:8000/api/cart",
-        {
-          product: item._id,
-          quantity: 1,
-        },
-        { withCredentials: true }
-      );
+  // const cartfetch = async (item) => {
+  //   try {
+  //     const res = await axios.post(
+  //       "http://localhost:8000/api/cart",
+  //       {
+  //         product: item._id,
+  //         quantity: 1,
+  //       },
+  //       { withCredentials: true }
+  //     );
 
-      console.log("Cart Response:", res.data);
+  //     console.log("Cart Response:", res.data);
 
-      setcart(res.data.cart.itemL);
+  //     setcart(res.data.cart.itemL);
 
-      setTimeout(() => setcart(false), 2500);
-    } catch (error) {
-      console.log("Add to cart error:", error.response?.data || error.message);
-      showToast("Failed to add to cart", "error");
-    }
-  };
+  //     setTimeout(() => setcart(false), 2500);
+  //   } catch (error) {
+  //     console.log("Add to cart error:", error.response?.data || error.message);
+  //     showToast("Failed to add to cart", "error");
+  //   }
+  // };
   const fetchProductId = async () => {
     try {
       const res = await axios.get(`http://localhost:8000/api/gets/${id}`);
@@ -421,12 +424,20 @@ const Product = () => {
   };
 
   const handleAddToCart = (item) => {
-    
+    console.log(item);
+
     setCartAdded(true);
-     cartfetch(item)
+    dispatch(
+      addtocart({
+        product: item,
+        quantity: 1,
+      })
+    );
+
+    // cartfetch(item);
     showToast("Added to cart successfully!");
-    setTimeout(() => setcart(false), 2500);
-    nav("/cart")
+    // setTimeout(() => setcart(false), 2500);
+     nav("/cart");
   };
 
   if (loading)

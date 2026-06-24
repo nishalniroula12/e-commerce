@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import {
-  fetchCart,
+
   removecart,
   updatecart,
   selectCartItems,
@@ -13,12 +13,11 @@ const Cart = () => {
   const dispatch = useDispatch();
 
   const items = useSelector(selectCartItems);
+  console.log(items)
   const total = useSelector(selectCartTotal);
   const count = useSelector(selectCartItemCount);
 
-  useEffect(() => {
-    dispatch(fetchCart());
-  }, [dispatch]);
+ 
 
   const getProductId = (item) => item.product?._id || item.product;
 
@@ -146,7 +145,8 @@ const Cart = () => {
       {/* CHECKOUT */}
       {items.length > 0 && (
         <div className="mt-6 flex justify-end">
-          <button className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition">
+          <button
+          onClick={()=>nav('/checkout')} className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition">
             🔒 Proceed to Checkout
           </button>
         </div>

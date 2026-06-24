@@ -1,35 +1,59 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const initialState = {
-  itemL: [],
-  totalamount: 0,
-  totalitems: 0,
-  loading: false,
+// Load cart from localStorage
+const getCartFromStorage = () => {
+  const cart = localStorage.getItem("cart");
+
+  if (cart) {
+    return JSON.parse(cart);
+  }
+
+  return {
+    itemL: [],
+    totalamount: 0,
+    totalitems: 0,
+    loading: false,
+  };
 };
 
-// ================= FETCH CART =================
-export const fetchCart = createAsyncThunk(
-  "cart/fetchCart",
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await axios.get("http://localhost:8000/api/findcart", {
-        withCredentials: true,
-      });
+// Save cart to localStorage
+const saveCartToStorage = (state) => {
+  localStorage.setItem(
+    "cart",
+    JSON.stringify({
+      itemL: state.itemL,
+      totalamount: state.totalamount,
+      totalitems: state.totalitems,
+    })
+  );
+};
 
-      return res.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Error");
-    }
-  }
-);
+const initialState = getCartFromStorage();
 
-// ================= SLICE =================
+// export const fetchCart = createAsyncThunk(
+//   "cart/fetchCart",
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const res = await axios.get(
+//         "http://localhost:8000/api/findcart",
+//         {
+//           withCredentials: true,
+//         }
+//       );
+
+//       return res.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || "Error");
+//     }
+//   }
+// );
+
 const cartSlice = createSlice({
   name: "cart",
   initialState,
+
   reducers: {
-    // ➕ ADD
     addtocart: (state, action) => {
       const { product, quantity = 1 } = action.payload;
 
@@ -60,23 +84,30 @@ const cartSlice = createSlice({
         (sum, i) => sum + i.price * i.quantity,
         0
       );
+
+      saveCartToStorage(state);
     },
 
-    // ❌ REMOVE
     removecart: (state, action) => {
       const productId = action.payload;
 
-      // Safe check if item.product is an object or a string
       state.itemL = state.itemL.filter(
         (item) => (item.product?._id || item.product) !== productId
       );
 
-      // Recalculate totals
-      state.totalitems = state.itemL.reduce((sum, i) => sum + i.quantity, 0);
-      state.totalamount = state.itemL.reduce((sum, i) => sum + i.price * i.quantity, 0);
+      state.totalitems = state.itemL.reduce(
+        (sum, i) => sum + i.quantity,
+        0
+      );
+
+      state.totalamount = state.itemL.reduce(
+        (sum, i) => sum + i.price * i.quantity,
+        0
+      );
+
+      saveCartToStorage(state);
     },
 
-    // ✏️ UPDATE
     updatecart: (state, action) => {
       const { productid, quantity } = action.payload;
 
@@ -88,7 +119,9 @@ const cartSlice = createSlice({
         item.quantity = quantity;
       }
 
-      state.itemL = state.itemL.filter((i) => i.quantity > 0);
+      state.itemL = state.itemL.filter(
+        (i) => i.quantity > 0
+      );
 
       state.totalitems = state.itemL.reduce(
         (sum, i) => sum + i.quantity,
@@ -99,24 +132,32 @@ const cartSlice = createSlice({
         (sum, i) => sum + i.price * i.quantity,
         0
       );
+
+      saveCartToStorage(state);
     },
 
     clearcart: (state) => {
       state.itemL = [];
       state.totalamount = 0;
       state.totalitems = 0;
+
+      localStorage.removeItem("cart");
     },
   },
 
-  extraReducers: (builder) => {
-    builder.addCase(fetchCart.fulfilled, (state, action) => {
-      const data = action.payload;
+  // extraReducers: (builder) => {
+  //   builder.addCase(fetchCart.fulfilled, (state, action) => {
+  //     const data = action.payload;
 
-      state.itemL = data.itemL || data.cart?.itemL || [];
-      state.totalamount = data.totalamount || data.cart?.totalamount || 0;
-      state.totalitems = data.totalitems || data.cart?.totalitems || 0;
-    });
-  },
+  //     state.itemL = data.itemL || data.cart?.itemL || [];
+  //     state.totalamount =
+  //       data.totalamount || data.cart?.totalamount || 0;
+  //     state.totalitems =
+  //       data.totalitems || data.cart?.totalitems || 0;
+
+  //     saveCartToStorage(state);
+  //   });
+  // },
 });
 
 export const {
@@ -128,7 +169,6 @@ export const {
 
 export default cartSlice.reducer;
 
-// ================= SELECTORS =================
 export const selectCartItems = (state) => state.cart.itemL;
 export const selectCartTotal = (state) => state.cart.totalamount;
 export const selectCartItemCount = (state) => state.cart.totalitems;
