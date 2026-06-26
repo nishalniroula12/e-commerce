@@ -460,12 +460,11 @@ const Navbar = () => {
                     </div>
 
                     {/* Seller Dashboard */}
-                    {user?.role ==="seller" && (
                     <NavLink to="/sellerpanel" className="nav-link">
                       Seller DB
                     </NavLink>
                     
-                    )}
+                  
                     {/* You can also show Home shortcut if you want */}
                     
                     {/* Cart still visible for logged users */}

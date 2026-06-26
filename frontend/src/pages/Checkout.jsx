@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 // ─── Design tokens ───────────────────────────────────────────────────────────
 // Palette: deep slate bg, soft white surface, indigo accent, warm coral CTA
@@ -243,6 +244,7 @@ const Checkout = () => {
   const [focused, setFocused] = useState(false);
   const [placed, setPlaced] = useState(false);
 
+  const nav =useNavigate()
   const subtotal = cartItems?.reduce(
     (acc, item) => acc + (item.price || 0) * (item.quantity || 0),
     0
@@ -420,11 +422,11 @@ const Checkout = () => {
                     ],
                   }}
                   transition={{ repeat: Infinity, duration: 2.8, ease: "easeInOut" }}
-                  onClick={() => {
-                    if (address.trim()) setPlaced(true);
-                  }}
+                  onClick={() => nav("/payment")
+
+                  }
                 >
-                  Place Order →
+                  Payment →
                 </motion.button>
 
                 <div style={styles.badge}>
