@@ -19,11 +19,10 @@ const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
-  const nav =useNavigate()
+  const nav = useNavigate();
 
   const isAuthenticate = useSelector((state) => state.data.isAuthenticate);
-  const user = useSelector((state) => state.data.user
-);
+  const user = useSelector((state) => state.data.user);
   console.log(isAuthenticate);
   console.log(user);
 
@@ -454,27 +453,32 @@ const Navbar = () => {
               >
                 {isAuthenticate ? (
                   <>
-                   <div className="nav-cart">
+                    <div className="nav-cart">
                       <FiShoppingCart size={20} />
-                      <NavLink to="/cart" className="nav-cart-badge">3</NavLink>
+                      <NavLink to="/cart" className="nav-cart-badge">
+                        3
+                      </NavLink>
                     </div>
 
                     {/* Seller Dashboard */}
-                    <NavLink to="/sellerpanel" className="nav-link">
-                      Seller DB
-                    </NavLink>
-                    
-                  
+                    {user?.role === "seller" && (
+                      <NavLink to="/sellerpanel" className="nav-link">
+                        Seller Panel
+                      </NavLink>
+                    )}
+
                     {/* You can also show Home shortcut if you want */}
-                    
+
                     {/* Cart still visible for logged users */}
-                   </>
+                  </>
                 ) : (
                   <>
                     {/* Cart */}
                     <div className="nav-cart">
                       <FiShoppingCart size={20} />
-                      <NavLink to="/cart" className="nav-cart-badge">3</NavLink>
+                      <NavLink to="/cart" className="nav-cart-badge">
+                        3
+                      </NavLink>
                     </div>
 
                     {/* Auth buttons */}
@@ -530,7 +534,11 @@ const Navbar = () => {
               <a className="mobile-link" onClick={() => setMobileOpen(false)}>
                 🏪 Become a Seller
               </a>
-              <NavLink to="/cart" className="mobile-link" onClick={() => setMobileOpen(false)}>
+              <NavLink
+                to="/cart"
+                className="mobile-link"
+                onClick={() => setMobileOpen(false)}
+              >
                 🛒 Cart (3 items)
               </NavLink>
 

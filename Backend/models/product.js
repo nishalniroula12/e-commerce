@@ -51,7 +51,12 @@ const productmodel =new mongoose.Schema({
     },
     rating:{
         type:Number,
-    }
+    },
+    seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Seller",
+        required: true,
+      },
 
 
 

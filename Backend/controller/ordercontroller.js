@@ -1,77 +1,64 @@
-import Cart from '../models/cart.js'
-import Order from '../models/orders.js';
+import Order from "../models/orders.js";
+import Product from "../models/product.js";
 
-export const createOrder = async (req, res) => {
+export const createorder =async(req,res)=>{
   try {
-    const { shippingAddress, paymentMethod } = req.body;
-    const user = req.user._id;
+    const user =req.user._id;
+    const {
+      cart,
+      paymentmethod,
+      paymentstatus,
+      shippingaddress,
+      notes
+    } =req.body
+    if(!cart || !cart.itemL || !cart.itemL.length ===0){
+      return res.status(200).json({
+        Success:false,
+        message:"Cart not found"
+      })
 
-    const cart = await Cart.findOne({ user:req.user._id }).populate("itemL.product");
-    console.log(cart)
 
-    if (!cart || cart.itemL.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Cart is empty",
-      });
     }
+    let orderItems=[]
+    for(const item of cart.itemL){
+      const product =await Product.findById(item.product)
 
-    const orderItems = [];
-    let totalAmount = 0;
-
-    for (const item of cart.itemL) {
-      const product = item.product;
-
-      if (!product) continue;
-
-      if (product.stock < item.quantity) {
-        return res.status(400).json({
-          success: false,
-          message: `Insufficient stock for ${product.title}`,
-        });
+      if(!product){
+        return res.status(200).json({
+          Success:false,
+          message:`Product not found:${item.Product}`
+        })
       }
-
       orderItems.push({
-        product: product._id,
-        seller: product.seller || null,
-        name: product.title || product.name,
-        price: product.price,
-        quantity: item.quantity,
-        image: product.image,
-      });
-
-      totalAmount += product.price * item.quantity;
-
-      product.stock -= item.quantity;
-      await product.save();
+        product:product._id,
+        seller:product.seller,
+        name:product.name,
+        price:product.price,
+        quantity:item.quantity,
+        image:product.image,
+      })
     }
+    const order =await Order.create({
+      user,
+      items:orderItems,
+      totalAmount: cart.totalamount,
+      paymentmethod,
+      paymentstatus,
+      shippingaddress,
+      notes,
+      status: "confirmed",
+    })
+    return res.status(201).json({
+        success:true,
+        message:"data is create",
+        order
 
-    const order = await Order.create({
-      user:req.user._id,
-      itemL:[],
-      items: orderItems,
-      totalAmount,
-      shippingAddress,
-      paymentMethod,
-      paymentStatus: paymentMethod === "cod" ? "pending" : "completed",
-    });
+    })
 
-    await Cart.findOneAndUpdate(
-      { user },
-      { $set: { itemL: [], totalamount: 0, totalitems: 0 } }
-    );
-
-    res.status(201).json({
-      success: true,
-      message: "Order placed successfully",
-      order,
-    });
-
+    
+    
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    console.log(error)
+    
   }
-};
+}

@@ -19,6 +19,7 @@ export const productcreate =async(req,res)=>{
             stock,
             category,
             rating,
+            seller: req.user._id,
             image:result.secure_url,
             public_id:result.public_id
         })
