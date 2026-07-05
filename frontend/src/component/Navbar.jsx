@@ -62,7 +62,7 @@ const Navbar = () => {
           box-shadow: 0 4px 24px rgba(0,0,0,0.09);
         }
         .nav-main:not(.scrolled) {
-          box-shadow: 0 1px 0 #e5e7eb;
+          box-shadow: 0 1px 0 #e5e7eb;a
         }
 
         /* ── Inner layout ── */
@@ -461,9 +461,13 @@ const Navbar = () => {
                     </div>
 
                     {/* Seller Dashboard */}
-                    {user?.role === "seller" && (
-                      <NavLink to="/sellerpanel" className="nav-link">
-                        Seller Panel
+                    <NavLink to="/sellerpanel" className="nav-link">
+                      Seller Panel
+                    </NavLink>
+
+                    {user?.role === "admin" && (
+                      <NavLink to="/admindashboard" className="nav-link">
+                        Admin Panel
                       </NavLink>
                     )}
 

@@ -1,3 +1,4 @@
+import { use } from "react";
 import Order from "../models/orders.js";
 import Product from "../models/product.js";
 
@@ -56,6 +57,26 @@ export const createorder =async(req,res)=>{
     })
 
     
+    
+  } catch (error) {
+    console.log(error)
+    
+  }
+}
+
+export const  getorder =async(req,res)=>{
+  try {
+    const user =req.user._id
+    console.log(user)
+    const orders = await Order.find({ user: req.user._id })
+    .populate("items.product")
+    .populate("items.seller");   
+     return res.status(201).json({
+      success:true,
+      message:"find by the user",
+      total:orders.length,
+      orders
+    })
     
   } catch (error) {
     console.log(error)

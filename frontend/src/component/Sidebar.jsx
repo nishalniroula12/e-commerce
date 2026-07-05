@@ -215,7 +215,7 @@ const Sidebar = () => {
           isOpen={ordersOpen}
           onToggle={() => setOrdersOpen(p => !p)}
         >
-          <NavItem to="/orders/add"       iconPath={icons.add}       label="New Order" />
+          <NavItem to="/order"       iconPath={icons.add}       label="New Order" />
           <NavItem to="/orders/pending"   iconPath={icons.pending}   label="Pending" />
           <NavItem to="/orders/delivered" iconPath={icons.delivered} label="Delivered" />
         </AccordionSection>

@@ -16,6 +16,8 @@ import Allproduct from "./pages/seller/Allproduct";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Payment from "./pages/Payment";
+import Order from "./pages/seller/Order";
+import Adminpage from "./pages/admin/Adminpage";
 
 const App = () => {
   return (
@@ -46,6 +48,10 @@ const App = () => {
           <Route path="/addproduct" element={<Addproduct/>}/>
           <Route path="/addproduct/:id" element={<Addproduct/>}/>
           <Route path="/allproduct" element={<Allproduct/>}/>
+          <Route path="/order" element={<Order/>}/>
+
+          <Route path="/admindashboard" element={<Adminpage/>}/>
+          <Route path="/product" element={<Product/>}/>
         </Route>
       </Route>
 
