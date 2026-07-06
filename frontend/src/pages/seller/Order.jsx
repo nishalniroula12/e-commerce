@@ -3,18 +3,19 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../../component/Sidebar";
 
 const Order = () => {
-  const [orders, setOrders] = useState([]);
+  const [order, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/createorder");
-      console.log(res.data)
+      const res = await axios.get("http://localhost:8000/api/createorder", {
+        withCredentials: true,
+      });
+      console.log(res.data);
+    
 
-      if (res.data.success) {
-        setOrders(res.data.orders);
-
-      }
+        setOrders(res.data.order);
+      
     } catch (error) {
       console.error("Error fetching orders:", error);
     } finally {
@@ -30,9 +31,7 @@ const Order = () => {
     return (
       <div>
         <Sidebar />
-        <h2 style={{ marginLeft: "260px", padding: "20px" }}>
-          Loading...
-        </h2>
+        <h2 style={{ marginLeft: "260px", padding: "20px" }}>Loading...</h2>
       </div>
     );
   }
@@ -44,10 +43,10 @@ const Order = () => {
       <div style={{ marginLeft: "260px", padding: "20px" }}>
         <h1>My Orders</h1>
 
-        {orders.length === 0 ? (
+        {order.length === 0 ? (
           <h2>No Orders Found</h2>
         ) : (
-          orders.map((order) => (
+          order.map((order) => (
             <div
               key={order._id}
               style={{
@@ -64,18 +63,15 @@ const Order = () => {
               </p>
 
               <p>
-                <strong>Payment Method:</strong>{" "}
-                {order.paymentmethod}
+                <strong>Payment Method:</strong> {order.paymentmethod}
               </p>
 
               <p>
-                <strong>Payment Status:</strong>{" "}
-                {order.paymentstatus}
+                <strong>Payment Status:</strong> {order.paymentstatus}
               </p>
 
               <p>
-                <strong>Total Amount:</strong> Rs.{" "}
-                {order.totalAmount}
+                <strong>Total Amount:</strong> Rs. {order.totalAmount}
               </p>
 
               <h3>Shipping Address</h3>
@@ -107,15 +103,11 @@ const Order = () => {
                 >
                   <img
                     src={item.image}
-                    alt={item.product.title}
-                    width="120"
-                    height="120"
-                    style={{
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                    }}
+                    alt={item.product?.title || "Product"}
                   />
 
+
+                  <p>Stock: {item.product?.stock}</p>
                   <div>
                     <h4>{item.product.title}</h4>
 
@@ -133,8 +125,7 @@ const Order = () => {
                     </p>
 
                     <p>
-                      <strong>Stock:</strong>{" "}
-                      {item.product.stock}
+                      <strong>Stock:</strong> {item.product.stock}
                     </p>
                   </div>
                 </div>

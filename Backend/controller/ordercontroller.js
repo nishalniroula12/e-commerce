@@ -68,14 +68,14 @@ export const  getorder =async(req,res)=>{
   try {
     const user =req.user._id
     console.log(user)
-    const orders = await Order.find({ user: req.user._id })
+    const order = await Order.find({ user: req.user._id })
     .populate("items.product")
     .populate("items.seller");   
      return res.status(201).json({
       success:true,
       message:"find by the user",
-      total:orders.length,
-      orders
+      total:order.length,
+      order
     })
     
   } catch (error) {

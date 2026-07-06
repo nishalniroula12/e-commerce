@@ -43,7 +43,7 @@ const StatCard = ({ label, value, color }) => (
 );
 
 // ── component ────────────────────────────────────────────────
-const Product = () => {
+const Adminproduct= () => {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -278,4 +278,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default Adminproduct;
