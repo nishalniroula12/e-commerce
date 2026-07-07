@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   FiShoppingCart,
   FiUser,
@@ -6,31 +6,166 @@ import {
   FiX,
   FiSearch,
   FiChevronDown,
+  FiChevronRight,
   FiHeadphones,
-  FiLogIn,
-  FiUserPlus,
+  FiHeart,
+  FiBell,
+  FiSun,
+  FiMoon,
+  FiPackage,
+  FiLogOut,
+  FiSettings,
+  FiTrash2,
 } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 
+// ── Dummy data — wire these up to your real store/cart/wishlist state ──
+const CATEGORY_MEGA_MENU = [
+  {
+    title: "Women",
+    items: ["Dresses", "Tops & tees", "Jeans", "Ethnic wear", "Outerwear"],
+  },
+  {
+    title: "Men",
+    items: ["Shirts", "T-shirts", "Trousers", "Jackets", "Ethnic wear"],
+  },
+  {
+    title: "Kids",
+    items: ["Boys", "Girls", "Infants", "School wear"],
+  },
+  {
+    title: "Accessories",
+    items: ["Bags", "Belts", "Watches", "Footwear", "Jewelry"],
+  },
+];
+
+const SEARCH_SUGGESTIONS = [
+  "Denim jacket",
+  "Floral summer dress",
+  "Slim fit chinos",
+  "Oversized hoodie",
+  "Leather ankle boots",
+];
+
+const MINI_CART_ITEMS = [
+  { id: 1, name: "Denim jacket · size M", qty: 1, price: 2499 },
+  { id: 2, name: "Floral summer dress · size S", qty: 1, price: 1799 },
+  { id: 3, name: "Slim fit chinos · size 32", qty: 2, price: 1299 },
+];
+
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
+  const [categoryOpen, setCategoryOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
+  const [announcementVisible, setAnnouncementVisible] = useState(true);
+
+  const searchRef = useRef(null);
+  const cartRef = useRef(null);
+  const profileRef = useRef(null);
+  const notifRef = useRef(null);
   const nav = useNavigate();
 
   const isAuthenticate = useSelector((state) => state.data.isAuthenticate);
   const user = useSelector((state) => state.data.user);
-  console.log(isAuthenticate);
-  console.log(user);
 
+  const cartCount = MINI_CART_ITEMS.reduce((sum, item) => sum + item.qty, 0);
+  const cartTotal = MINI_CART_ITEMS.reduce(
+    (sum, item) => sum + item.qty * item.price,
+    0
+  );
+
+  const filteredSuggestions = searchValue
+    ? SEARCH_SUGGESTIONS.filter((s) =>
+        s.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    : SEARCH_SUGGESTIONS;
+
+  // Scroll shadow
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close any open dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchFocused(false);
+      }
+      if (cartRef.current && !cartRef.current.contains(e.target)) {
+        setCartOpen(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setProfileOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Escape key closes everything + lock body scroll while mobile drawer is open
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        setSupportOpen(false);
+        setCategoryOpen(false);
+        setProfileOpen(false);
+        setCartOpen(false);
+        setNotifOpen(false);
+        setSearchFocused(false);
+      }
+    };
+    document.addEventListener("keydown", handleEsc);
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  const closeAllMenus = () => {
+    setMobileOpen(false);
+    setSupportOpen(false);
+    setCategoryOpen(false);
+    setProfileOpen(false);
+    setCartOpen(false);
+    setNotifOpen(false);
+  };
+
+  const theme = darkMode
+    ? {
+        bg: "#0f1512",
+        surface: "#161d19",
+        surfaceAlt: "#1e2622",
+        border: "#273129",
+        text: "#f3f5f3",
+        textMuted: "#9ca39d",
+        accent: "#22c55e",
+        accentSoft: "#16341f",
+      }
+    : {
+        bg: "#ffffff",
+        surface: "#ffffff",
+        surfaceAlt: "#f9fafb",
+        border: "#e5e7eb",
+        text: "#111827",
+        textMuted: "#6b7280",
+        accent: "#16a34a",
+        accentSoft: "#f0fdf4",
+      };
 
   return (
     <>
@@ -38,41 +173,59 @@ const Navbar = () => {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         .navbar-root * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+        .navbar-root button, .navbar-root a, .navbar-root [role="button"] { cursor: pointer; }
+        .navbar-root button:disabled { cursor: not-allowed; opacity: 0.5; }
 
-        /* ── Top announcement bar ── */
+        /* ── Announcement bar ── */
         .nav-announcement {
-          background: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
+          background: linear-gradient(90deg, ${theme.accent} 0%, #15803d 100%);
           color: #fff;
           font-size: 12px;
           font-weight: 500;
           letter-spacing: 0.4px;
           text-align: center;
-          padding: 7px 16px;
+          padding: 7px 40px 7px 16px;
+          position: relative;
+          overflow: hidden;
         }
+        .nav-announcement-close {
+          position: absolute;
+          right: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(255,255,255,0.18);
+          border: none;
+          color: #fff;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          transition: background 0.15s;
+        }
+        .nav-announcement-close:hover { background: rgba(255,255,255,0.32); }
 
         /* ── Main nav wrapper ── */
         .nav-main {
           position: sticky;
           top: 0;
           z-index: 50;
-          background: #fff;
-          transition: box-shadow 0.25s ease;
+          background: ${theme.surface};
+          transition: box-shadow 0.25s ease, background 0.25s ease;
         }
-        .nav-main.scrolled {
-          box-shadow: 0 4px 24px rgba(0,0,0,0.09);
-        }
-        .nav-main:not(.scrolled) {
-          box-shadow: 0 1px 0 #e5e7eb;a
-        }
+        .nav-main.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,0.09); }
+        .nav-main:not(.scrolled) { box-shadow: 0 1px 0 ${theme.border}; }
 
         /* ── Inner layout ── */
         .nav-inner {
           display: flex;
           align-items: center;
-          gap: 24px;
+          gap: 20px;
           padding: 0 24px;
           height: 64px;
-          max-width: 1280px;
+          max-width: 1320px;
           margin: 0 auto;
         }
 
@@ -84,64 +237,29 @@ const Navbar = () => {
           text-decoration: none;
           flex-shrink: 0;
         }
-        .nav-logo img {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          object-fit: cover;
-          border: 2px solid #16a34a;
+        .nav-logo-mark {
+          width: 34px;
+          height: 34px;
+          border-radius: 10px;
+          background: ${theme.accent};
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          font-weight: 700;
+          font-size: 15px;
+          flex-shrink: 0;
         }
         .nav-logo-text {
           font-size: 18px;
           font-weight: 700;
-          color: #16a34a;
+          color: ${theme.accent};
           letter-spacing: -0.4px;
         }
-        .nav-logo-text span { color: #111827; }
-
-        /* ── Search bar ── */
-        .nav-search {
-          flex: 1;
-          max-width: 380px;
-          position: relative;
-          display: flex;
-          align-items: center;
-        }
-        .nav-search input {
-          width: 100%;
-          padding: 9px 16px 9px 40px;
-          border: 1.5px solid #e5e7eb;
-          border-radius: 10px;
-          font-size: 13.5px;
-          color: #111827;
-          background: #f9fafb;
-          transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-          outline: none;
-        }
-        .nav-search input:focus {
-          border-color: #16a34a;
-          background: #fff;
-          box-shadow: 0 0 0 3px rgba(22,163,74,0.12);
-        }
-        .nav-search .search-icon {
-          position: absolute;
-          left: 13px;
-          color: #9ca3af;
-          pointer-events: none;
-          transition: color 0.2s;
-        }
-        .nav-search input:focus ~ .search-icon,
-        .nav-search:focus-within .search-icon {
-          color: #16a34a;
-        }
+        .nav-logo-text span { color: ${theme.text}; }
 
         /* ── Desktop links ── */
-        .nav-links {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          margin-left: auto;
-        }
+        .nav-links { display: flex; align-items: center; gap: 2px; }
         .nav-link {
           display: flex;
           align-items: center;
@@ -150,96 +268,314 @@ const Navbar = () => {
           border-radius: 8px;
           font-size: 14px;
           font-weight: 500;
-          color: #374151;
+          color: ${theme.text};
           text-decoration: none;
-          cursor: pointer;
           white-space: nowrap;
           transition: background 0.15s, color 0.15s;
           border: none;
           background: none;
           position: relative;
         }
-        .nav-link:hover, .nav-link.active {
-          background: #f0fdf4;
-          color: #16a34a;
+        .nav-link:hover, .nav-link.active { background: ${theme.accentSoft}; color: ${theme.accent}; }
+        .nav-link.active::after {
+          content: "";
+          position: absolute;
+          left: 12px;
+          right: 12px;
+          bottom: 2px;
+          height: 2px;
+          border-radius: 2px;
+          background: ${theme.accent};
         }
 
-        /* ── Dropdown ── */
-        .dropdown-wrapper {
-          position: relative;
-        }
-        .dropdown-menu {
+        /* ── Mega menu (categories) ── */
+        .mega-wrapper { position: relative; }
+        .mega-menu {
           position: absolute;
-          top: calc(100% + 8px);
-          right: 0;
-          background: #fff;
-          border: 1px solid #e5e7eb;
-          border-radius: 12px;
-          box-shadow: 0 12px 32px rgba(0,0,0,0.12);
-          min-width: 200px;
-          padding: 6px;
-          animation: dropIn 0.15s ease;
+          top: calc(100% + 10px);
+          left: 0;
+          background: ${theme.surface};
+          border: 1px solid ${theme.border};
+          border-radius: 14px;
+          box-shadow: 0 16px 40px rgba(0,0,0,0.14);
+          display: grid;
+          grid-template-columns: repeat(4, 170px);
+          gap: 4px;
+          padding: 18px;
+          animation: dropIn 0.16s ease;
+          z-index: 60;
         }
+        .mega-col-title {
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: ${theme.textMuted};
+          margin-bottom: 8px;
+          padding: 0 8px;
+        }
+        .mega-item {
+          display: block;
+          padding: 7px 8px;
+          border-radius: 7px;
+          font-size: 13.5px;
+          color: ${theme.text};
+          text-decoration: none;
+          transition: background 0.13s, color 0.13s;
+        }
+        .mega-item:hover { background: ${theme.accentSoft}; color: ${theme.accent}; }
+
         @keyframes dropIn {
           from { opacity: 0; transform: translateY(-6px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        .dropdown-item {
+
+        /* ── Search bar with suggestions ── */
+        .nav-search-wrap { flex: 1; max-width: 400px; position: relative; }
+        .nav-search {
+          display: flex;
+          align-items: center;
+          position: relative;
+        }
+        .nav-search input {
+          width: 100%;
+          padding: 9px 16px 9px 40px;
+          border: 1.5px solid ${theme.border};
+          border-radius: 10px;
+          font-size: 13.5px;
+          color: ${theme.text};
+          background: ${theme.surfaceAlt};
+          transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+          outline: none;
+        }
+        .nav-search input:focus {
+          border-color: ${theme.accent};
+          background: ${theme.surface};
+          box-shadow: 0 0 0 3px ${theme.accentSoft};
+        }
+        .nav-search .search-icon {
+          position: absolute;
+          left: 13px;
+          color: ${theme.textMuted};
+          pointer-events: none;
+          transition: color 0.2s;
+        }
+        .nav-search:focus-within .search-icon { color: ${theme.accent}; }
+
+        .search-suggestions {
+          position: absolute;
+          top: calc(100% + 8px);
+          left: 0;
+          right: 0;
+          background: ${theme.surface};
+          border: 1px solid ${theme.border};
+          border-radius: 12px;
+          box-shadow: 0 16px 40px rgba(0,0,0,0.14);
+          padding: 6px;
+          animation: dropIn 0.15s ease;
+          z-index: 60;
+        }
+        .search-suggestion-item {
           display: flex;
           align-items: center;
           gap: 10px;
-          padding: 10px 14px;
+          padding: 9px 10px;
           border-radius: 8px;
           font-size: 13.5px;
-          font-weight: 500;
-          color: #374151;
-          text-decoration: none;
-          transition: background 0.13s, color 0.13s;
+          color: ${theme.text};
+          transition: background 0.12s;
         }
-        .dropdown-item:hover {
-          background: #f0fdf4;
-          color: #16a34a;
-        }
-        .dropdown-item svg { flex-shrink: 0; }
+        .search-suggestion-item:hover { background: ${theme.accentSoft}; color: ${theme.accent}; }
 
-        /* ── Divider in dropdown ── */
-        .dropdown-divider {
-          height: 1px;
-          background: #f3f4f6;
-          margin: 6px 0;
-        }
-
-        /* ── Cart button ── */
-        .nav-cart {
+        /* ── Icon buttons (bell, wishlist, dark mode) ── */
+        .icon-btn {
           position: relative;
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
+          width: 38px;
+          height: 38px;
           display: flex;
           align-items: center;
           justify-content: center;
           border-radius: 10px;
-          color: #374151;
-          transition: background 0.15s, color 0.15s;
+          border: none;
+          background: none;
+          color: ${theme.text};
+          transition: background 0.15s, color 0.15s, transform 0.1s;
           flex-shrink: 0;
         }
-        .nav-cart:hover { background: #f0fdf4; color: #16a34a; }
-        .nav-cart-badge {
+        .icon-btn:hover { background: ${theme.accentSoft}; color: ${theme.accent}; }
+        .icon-btn:active { transform: scale(0.94); }
+        .icon-dot {
           position: absolute;
-          top: 4px;
-          right: 4px;
-          width: 16px;
+          top: 6px;
+          right: 6px;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #ef4444;
+          border: 2px solid ${theme.surface};
+        }
+        .icon-badge {
+          position: absolute;
+          top: 2px;
+          right: 2px;
+          min-width: 16px;
           height: 16px;
+          padding: 0 3px;
           background: #ef4444;
           color: #fff;
           font-size: 10px;
           font-weight: 700;
-          border-radius: 50%;
+          border-radius: 999px;
           display: flex;
           align-items: center;
           justify-content: center;
           line-height: 1;
         }
+
+        /* ── Notification dropdown ── */
+        .notif-menu {
+          position: absolute;
+          top: calc(100% + 10px);
+          right: 0;
+          width: 280px;
+          background: ${theme.surface};
+          border: 1px solid ${theme.border};
+          border-radius: 14px;
+          box-shadow: 0 16px 40px rgba(0,0,0,0.14);
+          padding: 8px;
+          animation: dropIn 0.15s ease;
+          z-index: 60;
+        }
+        .notif-header {
+          font-size: 13px;
+          font-weight: 700;
+          color: ${theme.text};
+          padding: 8px 10px 4px;
+        }
+        .notif-item {
+          padding: 9px 10px;
+          border-radius: 8px;
+          font-size: 13px;
+          color: ${theme.textMuted};
+          transition: background 0.12s;
+        }
+        .notif-item strong { color: ${theme.text}; font-weight: 600; }
+        .notif-item:hover { background: ${theme.accentSoft}; }
+
+        /* ── Mini cart dropdown ── */
+        .mini-cart {
+          position: absolute;
+          top: calc(100% + 10px);
+          right: 0;
+          width: 300px;
+          background: ${theme.surface};
+          border: 1px solid ${theme.border};
+          border-radius: 14px;
+          box-shadow: 0 16px 40px rgba(0,0,0,0.14);
+          padding: 14px;
+          animation: dropIn 0.15s ease;
+          z-index: 60;
+        }
+        .mini-cart-empty { font-size: 13px; color: ${theme.textMuted}; text-align: center; padding: 20px 0; }
+        .mini-cart-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+          padding: 8px 0;
+          border-bottom: 1px solid ${theme.border};
+        }
+        .mini-cart-row:last-of-type { border-bottom: none; }
+        .mini-cart-name { font-size: 13px; color: ${theme.text}; font-weight: 500; }
+        .mini-cart-meta { font-size: 12px; color: ${theme.textMuted}; }
+        .mini-cart-remove {
+          border: none;
+          background: none;
+          color: ${theme.textMuted};
+          padding: 4px;
+          border-radius: 6px;
+          transition: color 0.13s, background 0.13s;
+        }
+        .mini-cart-remove:hover { color: #ef4444; background: rgba(239,68,68,0.1); }
+        .mini-cart-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 10px;
+          padding-top: 10px;
+          border-top: 1.5px solid ${theme.border};
+        }
+        .mini-cart-total { font-size: 14px; font-weight: 700; color: ${theme.text}; }
+        .mini-cart-checkout {
+          padding: 8px 16px;
+          border-radius: 8px;
+          font-size: 13px;
+          font-weight: 600;
+          color: #fff;
+          background: ${theme.accent};
+          border: none;
+          text-decoration: none;
+          transition: filter 0.15s;
+        }
+        .mini-cart-checkout:hover { filter: brightness(0.92); }
+
+        /* ── Profile dropdown ── */
+        .profile-trigger {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 5px 10px 5px 5px;
+          border-radius: 999px;
+          border: 1.5px solid ${theme.border};
+          background: none;
+          transition: border-color 0.15s, background 0.15s;
+        }
+        .profile-trigger:hover { border-color: ${theme.accent}; background: ${theme.accentSoft}; }
+        .profile-avatar {
+          width: 26px;
+          height: 26px;
+          border-radius: 50%;
+          background: ${theme.accent};
+          color: #fff;
+          font-size: 12px;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .profile-menu {
+          position: absolute;
+          top: calc(100% + 10px);
+          right: 0;
+          width: 200px;
+          background: ${theme.surface};
+          border: 1px solid ${theme.border};
+          border-radius: 14px;
+          box-shadow: 0 16px 40px rgba(0,0,0,0.14);
+          padding: 8px;
+          animation: dropIn 0.15s ease;
+          z-index: 60;
+        }
+        .profile-menu-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 9px 10px;
+          border-radius: 8px;
+          font-size: 13.5px;
+          font-weight: 500;
+          color: ${theme.text};
+          text-decoration: none;
+          border: none;
+          background: none;
+          width: 100%;
+          text-align: left;
+          transition: background 0.12s, color 0.12s;
+        }
+        .profile-menu-item:hover { background: ${theme.accentSoft}; color: ${theme.accent}; }
+        .profile-menu-item.danger:hover { background: rgba(239,68,68,0.1); color: #ef4444; }
+        .profile-divider { height: 1px; background: ${theme.border}; margin: 6px 0; }
 
         /* ── Auth buttons ── */
         .btn-login {
@@ -247,326 +583,498 @@ const Navbar = () => {
           border-radius: 8px;
           font-size: 13.5px;
           font-weight: 600;
-          color: #16a34a;
-          border: 1.5px solid #16a34a;
+          color: ${theme.accent};
+          border: 1.5px solid ${theme.accent};
           background: transparent;
           text-decoration: none;
-          transition: background 0.15s, color 0.15s;
+          transition: background 0.15s;
           white-space: nowrap;
         }
-        .btn-login:hover { background: #f0fdf4; }
-
+        .btn-login:hover { background: ${theme.accentSoft}; }
         .btn-signup {
           padding: 7px 14px;
           border-radius: 8px;
           font-size: 13.5px;
           font-weight: 600;
           color: #fff;
-          background: #16a34a;
+          background: ${theme.accent};
           border: none;
           text-decoration: none;
-          transition: background 0.15s, transform 0.1s;
+          transition: filter 0.15s, transform 0.1s;
           white-space: nowrap;
-          cursor: pointer;
         }
-        .btn-signup:hover { background: #15803d; transform: translateY(-1px); }
+        .btn-signup:hover { filter: brightness(0.92); transform: translateY(-1px); }
+
+        /* ── Right cluster ── */
+        .nav-right { display: flex; align-items: center; gap: 6px; margin-left: auto; flex-shrink: 0; }
 
         /* ── Mobile toggle ── */
         .nav-mobile-toggle {
           display: none;
           align-items: center;
           justify-content: center;
-          width: 40px;
-          height: 40px;
+          width: 38px;
+          height: 38px;
           border: none;
-          background: #f3f4f6;
+          background: ${theme.surfaceAlt};
           border-radius: 8px;
-          cursor: pointer;
-          color: #374151;
-          margin-left: auto;
+          color: ${theme.text};
           flex-shrink: 0;
         }
 
-        /* ── Mobile drawer ── */
+        /* ── Mobile drawer + backdrop ── */
+        .nav-backdrop {
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.4);
+          z-index: 55;
+          animation: fadeIn 0.18s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         .nav-mobile-drawer {
-          background: #fff;
-          border-top: 1px solid #f3f4f6;
-          padding: 16px 20px 20px;
-          animation: slideDown 0.18s ease;
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: min(84vw, 340px);
+          background: ${theme.surface};
+          z-index: 56;
+          padding: 18px;
+          overflow-y: auto;
+          animation: slideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+          display: flex;
+          flex-direction: column;
         }
-        @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-8px); }
-          to   { opacity: 1; transform: translateY(0); }
+        @keyframes slideIn {
+          from { transform: translateX(100%); }
+          to   { transform: translateX(0); }
         }
-        .nav-mobile-search {
-          position: relative;
+        .nav-mobile-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
           margin-bottom: 16px;
         }
+        .nav-mobile-search { position: relative; margin-bottom: 16px; }
         .nav-mobile-search input {
           width: 100%;
           padding: 10px 16px 10px 40px;
-          border: 1.5px solid #e5e7eb;
+          border: 1.5px solid ${theme.border};
           border-radius: 10px;
           font-size: 14px;
-          color: #111827;
-          background: #f9fafb;
+          color: ${theme.text};
+          background: ${theme.surfaceAlt};
           outline: none;
-        }
-        .nav-mobile-search input:focus {
-          border-color: #16a34a;
-          background: #fff;
-          box-shadow: 0 0 0 3px rgba(22,163,74,0.12);
         }
         .nav-mobile-search .search-icon {
           position: absolute;
           left: 13px;
           top: 50%;
           transform: translateY(-50%);
-          color: #9ca3af;
-          pointer-events: none;
+          color: ${theme.textMuted};
+        }
+        .mobile-section-title {
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.6px;
+          color: ${theme.textMuted};
+          margin: 14px 0 6px;
         }
         .mobile-link {
           display: flex;
           align-items: center;
+          justify-content: space-between;
           gap: 10px;
-          padding: 11px 4px;
-          border-bottom: 1px solid #f3f4f6;
+          padding: 12px 4px;
+          border-bottom: 1px solid ${theme.border};
           font-size: 14px;
           font-weight: 500;
-          color: #374151;
+          color: ${theme.text};
           text-decoration: none;
-          cursor: pointer;
           transition: color 0.15s;
         }
-        .mobile-link:hover { color: #16a34a; }
-        .mobile-link:last-child { border-bottom: none; }
-        .mobile-auth {
-          display: flex;
-          gap: 10px;
-          margin-top: 16px;
-        }
-        .mobile-auth a {false
-          flex: 1;
-          text-align: center;
-        }
+        .mobile-link:hover { color: ${theme.accent}; }
+        .mobile-link-left { display: flex; align-items: center; gap: 10px; }
+        .mobile-auth { display: flex; gap: 10px; margin-top: auto; padding-top: 16px; }
+        .mobile-auth a { flex: 1; text-align: center; }
 
         /* ── Responsive breakpoints ── */
+        @media (max-width: 1080px) {
+          .nav-search-wrap { max-width: 260px; }
+        }
         @media (max-width: 900px) {
-          .nav-search { max-width: 260px; }
+          .mega-menu { grid-template-columns: repeat(2, 160px); }
         }
         @media (max-width: 768px) {
-          .nav-links, .nav-search { display: none !important; }
+          .nav-links, .nav-search-wrap, .profile-trigger, .nav-right .icon-btn.desktop-only { display: none !important; }
           .nav-mobile-toggle { display: flex; }
           .nav-logo-text { font-size: 16px; }
         }
         @media (max-width: 400px) {
-          .nav-inner { padding: 0 14px; gap: 12px; }
+          .nav-inner { padding: 0 14px; gap: 10px; }
         }
       `}</style>
 
       <div className="navbar-root">
         {/* Announcement bar */}
-        <div className="nav-announcement">
-          🎉 Free shipping on orders above ₹499 — Shop Now
-        </div>
+        {announcementVisible && (
+          <div className="nav-announcement">
+            Free shipping on orders above ₹499 — Shop now
+            <button
+              className="nav-announcement-close"
+              onClick={() => setAnnouncementVisible(false)}
+              aria-label="Dismiss announcement"
+            >
+              <FiX size={12} />
+            </button>
+          </div>
+        )}
 
         {/* Main nav */}
         <nav className={`nav-main${scrolled ? " scrolled" : ""}`}>
           <div className="nav-inner">
             {/* Logo */}
-            <NavLink to="/" className="nav-logo">
-              <img
-                src="data:image/jpeg;base64,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"
-                alt="Logo"
-              />
+            <NavLink to="/" className="nav-logo" onClick={closeAllMenus}>
+              <span className="nav-logo-mark">TL</span>
               <span className="nav-logo-text">
-                Fresh<span>Mart</span>
+                Thread<span>line</span>
               </span>
             </NavLink>
-
-            {/* Search (desktop) */}
-            <div className="nav-search" style={{ display: "flex" }}>
-              <FiSearch
-                size={15}
-                className="search-icon"
-                style={{ position: "absolute", left: 13 }}
-              />
-              <input
-                type="text"
-                placeholder="Search for products..."
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-              />
-            </div>
 
             {/* Desktop nav links */}
             <div className="nav-links">
               <NavLink
                 to="/"
-                className={({ isActive }) =>
-                  `nav-link${isActive ? " active" : ""}`
-                }
+                className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
               >
                 Home
               </NavLink>
 
-              {/* Help & Support dropdown */}
+              {/* Categories mega menu */}
               <div
-                className="dropdown-wrapper"
-                onMouseEnter={() => setSupportOpen(true)}
-                onMouseLeave={() => setSupportOpen(false)}
+                className="mega-wrapper"
+                onMouseEnter={() => setCategoryOpen(true)}
+                onMouseLeave={() => setCategoryOpen(false)}
               >
-                <button
-                  className="nav-link"
-                  style={{ display: "flex", alignItems: "center", gap: 5 }}
-                >
-                  Help & Support
+                <button className="nav-link">
+                  Categories
                   <FiChevronDown
                     size={14}
                     style={{
                       transition: "transform 0.2s",
-                      transform: supportOpen
-                        ? "rotate(180deg)"
-                        : "rotate(0deg)",
+                      transform: categoryOpen ? "rotate(180deg)" : "rotate(0deg)",
                     }}
                   />
                 </button>
+                {categoryOpen && (
+                  <div className="mega-menu">
+                    {CATEGORY_MEGA_MENU.map((col) => (
+                      <div key={col.title}>
+                        <div className="mega-col-title">{col.title}</div>
+                        {col.items.map((item) => (
+                          <a key={item} href="#" className="mega-item">
+                            {item}
+                          </a>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
+              {/* Help & Support dropdown */}
+              <div
+                className="mega-wrapper"
+                onMouseEnter={() => setSupportOpen(true)}
+                onMouseLeave={() => setSupportOpen(false)}
+              >
+                <button className="nav-link">
+                  Help & support
+                  <FiChevronDown
+                    size={14}
+                    style={{
+                      transition: "transform 0.2s",
+                      transform: supportOpen ? "rotate(180deg)" : "rotate(0deg)",
+                    }}
+                  />
+                </button>
                 {supportOpen && (
-                  <div className="dropdown-menu">
-                    <a href="#" className="dropdown-item">
-                      <FiHeadphones size={15} /> Contact Support
+                  <div
+                    className="mega-menu"
+                    style={{ gridTemplateColumns: "200px" }}
+                  >
+                    <a href="#" className="mega-item" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <FiHeadphones size={15} /> Contact support
                     </a>
-                    <a href="#" className="dropdown-item">
+                    <a href="#" className="mega-item" style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <FiUser size={15} /> FAQ
                     </a>
-                    <div className="dropdown-divider" />
-                    <a href="#" className="dropdown-item">
-                      <FiShoppingCart size={15} /> Track My Order
+                    <a href="#" className="mega-item" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <FiPackage size={15} /> Track my order
                     </a>
                   </div>
                 )}
               </div>
-              {/* Right side (Cart + Auth / Seller) */}
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+            </div>
+
+            {/* Search with live suggestions */}
+            <div className="nav-search-wrap" ref={searchRef}>
+              <div className="nav-search">
+                <FiSearch size={15} className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search for products..."
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  onFocus={() => setSearchFocused(true)}
+                />
+              </div>
+              {searchFocused && filteredSuggestions.length > 0 && (
+                <div className="search-suggestions">
+                  {filteredSuggestions.map((s) => (
+                    <div
+                      key={s}
+                      className="search-suggestion-item"
+                      onClick={() => {
+                        setSearchValue(s);
+                        setSearchFocused(false);
+                      }}
+                    >
+                      <FiSearch size={13} />
+                      {s}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Right cluster */}
+            <div className="nav-right">
+              {/* Dark mode toggle */}
+              <button
+                className="icon-btn desktop-only"
+                onClick={() => setDarkMode((d) => !d)}
+                aria-label="Toggle dark mode"
               >
-                {isAuthenticate ? (
-                  <>
-                    <div className="nav-cart">
-                      <FiShoppingCart size={20} />
-                      <NavLink to="/cart" className="nav-cart-badge">
-                        3
-                      </NavLink>
+                {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
+              </button>
+
+              {/* Wishlist */}
+              <button className="icon-btn desktop-only" aria-label="Wishlist">
+                <FiHeart size={18} />
+              </button>
+
+              {/* Notifications */}
+              <div style={{ position: "relative" }} ref={notifRef}>
+                <button
+                  className="icon-btn desktop-only"
+                  onClick={() => setNotifOpen((o) => !o)}
+                  aria-label="Notifications"
+                >
+                  <FiBell size={18} />
+                  <span className="icon-dot" />
+                </button>
+                {notifOpen && (
+                  <div className="notif-menu">
+                    <div className="notif-header">Notifications</div>
+                    <div className="notif-item">
+                      <strong>Order shipped</strong> — your order #4821 is on the way.
                     </div>
-
-                    {/* Seller Dashboard */}
-                    <NavLink to="/sellerpanel" className="nav-link">
-                      Seller Panel
-                    </NavLink>
-
-                    {user?.role === "admin" && (
-                      <NavLink to="/admindashboard" className="nav-link">
-                        Admin Panel
-                      </NavLink>
-                    )}
-
-                    {/* You can also show Home shortcut if you want */}
-
-                    {/* Cart still visible for logged users */}
-                  </>
-                ) : (
-                  <>
-                    {/* Cart */}
-                    <div className="nav-cart">
-                      <FiShoppingCart size={20} />
-                      <NavLink to="/cart" className="nav-cart-badge">
-                        3
-                      </NavLink>
+                    <div className="notif-item">
+                      <strong>20% off</strong> — pantry essentials this weekend.
                     </div>
-
-                    {/* Auth buttons */}
-                    <div className="nav-links" style={{ gap: 8 }}>
-                      <NavLink to="/login" className="btn-login">
-                        Log in
-                      </NavLink>
-                      <NavLink to="/signin" className="btn-signup">
-                        Sign up
-                      </NavLink>
+                    <div className="notif-item">
+                      <strong>Back in stock</strong> — items from your wishlist.
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
+
+              {/* Mini cart */}
+              <div style={{ position: "relative" }} ref={cartRef}>
+                <button
+                  className="icon-btn"
+                  onClick={() => setCartOpen((o) => !o)}
+                  aria-label={`Cart, ${cartCount} items`}
+                >
+                  <FiShoppingCart size={18} />
+                  {cartCount > 0 && <span className="icon-badge">{cartCount}</span>}
+                </button>
+                {cartOpen && (
+                  <div className="mini-cart">
+                    {MINI_CART_ITEMS.length === 0 ? (
+                      <div className="mini-cart-empty">Your cart is empty.</div>
+                    ) : (
+                      <>
+                        {MINI_CART_ITEMS.map((item) => (
+                          <div className="mini-cart-row" key={item.id}>
+                            <div>
+                              <div className="mini-cart-name">{item.name}</div>
+                              <div className="mini-cart-meta">
+                                Qty {item.qty} · ₹{item.price}
+                              </div>
+                            </div>
+                            <button className="mini-cart-remove" aria-label={`Remove ${item.name}`}>
+                              <FiTrash2 size={15} />
+                            </button>
+                          </div>
+                        ))}
+                        <div className="mini-cart-footer">
+                          <span className="mini-cart-total">₹{cartTotal}</span>
+                          <NavLink to="/cart" className="mini-cart-checkout" onClick={() => setCartOpen(false)}>
+                            Checkout
+                          </NavLink>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Auth / profile */}
+              {isAuthenticate ? (
+                <div style={{ position: "relative" }} ref={profileRef}>
+                  <button
+                    className="profile-trigger"
+                    onClick={() => setProfileOpen((o) => !o)}
+                  >
+                    <span className="profile-avatar">
+                      {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                    </span>
+                    <FiChevronDown
+                      size={14}
+                      style={{
+                        transition: "transform 0.2s",
+                        transform: profileOpen ? "rotate(180deg)" : "rotate(0deg)",
+                      }}
+                    />
+                  </button>
+                  {profileOpen && (
+                    <div className="profile-menu">
+                        <NavLink to="/sellerpanel" className="profile-menu-item">
+                          <FiSettings size={15} /> Seller panel
+                        </NavLink>
+                      
+                      {user?.role === "admin" && (
+                        <NavLink to="/admindashboard" className="profile-menu-item">
+                          <FiSettings size={15} /> Admin panel
+                        </NavLink>
+                      )}
+                      <div className="profile-divider" />
+                      <button className="profile-menu-item danger">
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ display: "flex", gap: 8 }} className="desktop-only">
+                  <NavLink to="/login" className="btn-login">
+                    Log in
+                  </NavLink>
+                  <NavLink to="/signin" className="btn-signup">
+                    Sign up
+                  </NavLink>
+                </div>
+              )}
+
+              {/* Mobile toggle */}
+              <button
+                className="nav-mobile-toggle"
+                onClick={() => setMobileOpen(!mobileOpen)}
+                aria-label="Toggle menu"
+                aria-expanded={mobileOpen}
+              >
+                {mobileOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+              </button>
             </div>
-
-            {/* Cart */}
-            {/* Mobile toggle */}
-            <button
-              className="nav-mobile-toggle"
-              onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label="Toggle menu"
-            >
-              {mobileOpen ? <FiX size={20} /> : <FiMenu size={20} />}
-            </button>
           </div>
+        </nav>
 
-          {/* Mobile drawer */}
-          {mobileOpen && (
+        {/* Mobile backdrop + drawer */}
+        {mobileOpen && (
+          <>
+            <div className="nav-backdrop" onClick={() => setMobileOpen(false)} />
             <div className="nav-mobile-drawer">
+              <div className="nav-mobile-header">
+                <span className="nav-logo-text">
+                  Thread<span>line</span>
+                </span>
+                <button
+                  className="icon-btn"
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Close menu"
+                >
+                  <FiX size={20} />
+                </button>
+              </div>
+
               <div className="nav-mobile-search">
                 <FiSearch size={15} className="search-icon" />
-                <input type="text" placeholder="Search for products..." />
+                <input
+                  type="text"
+                  placeholder="Search for products..."
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                />
               </div>
 
-              <NavLink
-                to="/"
-                className="mobile-link"
-                onClick={() => setMobileOpen(false)}
-              >
-                🏠 Home
-              </NavLink>
-              <a className="mobile-link" onClick={() => setMobileOpen(false)}>
-                📦 Categories
-              </a>
-              <NavLink
-                to="/product"
-                className="mobile-link"
-                onClick={() => setMobileOpen(false)}
-              >
-                🎧 Help & Support
-              </NavLink>
-              <a className="mobile-link" onClick={() => setMobileOpen(false)}>
-                🏪 Become a Seller
-              </a>
-              <NavLink
-                to="/cart"
-                className="mobile-link"
-                onClick={() => setMobileOpen(false)}
-              >
-                🛒 Cart (3 items)
+              <NavLink to="/" className="mobile-link" onClick={() => setMobileOpen(false)}>
+                <span className="mobile-link-left">Home</span>
+                <FiChevronRight size={16} />
               </NavLink>
 
-              <div className="mobile-auth">
-                <NavLink
-                  to="/login"
-                  className="btn-login"
-                  style={{ display: "block" }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Log in
-                </NavLink>
-                <NavLink
-                  to="/signin"
-                  className="btn-signup"
-                  style={{ display: "block", borderRadius: 8 }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Sign up
-                </NavLink>
-              </div>
+              <div className="mobile-section-title">Shop</div>
+              {CATEGORY_MEGA_MENU.map((col) => (
+                <a key={col.title} href="#" className="mobile-link">
+                  <span className="mobile-link-left">{col.title}</span>
+                  <FiChevronRight size={16} />
+                </a>
+              ))}
+
+              <div className="mobile-section-title">Account</div>
+              <NavLink to="/cart" className="mobile-link" onClick={() => setMobileOpen(false)}>
+                <span className="mobile-link-left">
+                  <FiShoppingCart size={16} /> Cart ({cartCount})
+                </span>
+                <FiChevronRight size={16} />
+              </NavLink>
+              <a href="#" className="mobile-link">
+                <span className="mobile-link-left">
+                  <FiHeart size={16} /> Wishlist
+                </span>
+                <FiChevronRight size={16} />
+              </a>
+              <NavLink to="/product" className="mobile-link" onClick={() => setMobileOpen(false)}>
+                <span className="mobile-link-left">
+                  <FiHeadphones size={16} /> Help & support
+                </span>
+                <FiChevronRight size={16} />
+              </NavLink>
+              <button
+                className="mobile-link"
+                style={{ width: "100%", border: "none", background: "none" }}
+                onClick={() => setDarkMode((d) => !d)}
+              >
+                <span className="mobile-link-left">
+                  {darkMode ? <FiSun size={16} /> : <FiMoon size={16} />} Dark mode
+                </span>
+              </button>
+
+              {!isAuthenticate && (
+                <div className="mobile-auth">
+                  <NavLink to="/login" className="btn-login" onClick={() => setMobileOpen(false)}>
+                    Log in
+                  </NavLink>
+                  <NavLink to="/signin" className="btn-signup" onClick={() => setMobileOpen(false)}>
+                    Sign up
+                  </NavLink>
+                </div>
+              )}
             </div>
-          )}
-        </nav>
+          </>
+        )}
       </div>
     </>
   );

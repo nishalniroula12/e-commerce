@@ -47,14 +47,22 @@ const Allproduct = () => {
   const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [page ,setpage] =useState(1)
+  const [totalpage ,settotalpage]=useState(1)
 
-  const nav = useNavigate();
+  const nav = useNavigate();  
 
   // FETCH PRODUCTS
   const productfetch = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/get");
+      const res = await axios.get("http://localhost:8000/api/get",{
+        params:{
+          page,
+          limit:2
+        }
+      });
       setData(res.data.product || []);
+      settotalpage(res.data.totalpage)
     } catch (error) {
       console.log(error);
     }
@@ -62,7 +70,7 @@ const Allproduct = () => {
 
   useEffect(() => {
     productfetch();
-  }, []);
+  }, [page]);
 
   // FILTER
   const filtered = data.filter(
@@ -232,7 +240,42 @@ const Allproduct = () => {
             </AnimatePresence>
           </motion.ul>
         </div>
+        <div className="flex items-center justify-center gap-4 mt-8">
+        <button
+          disabled={page === 1}
+          onClick={() => setpage(page - 1)}
+          className={`px-5 py-2 rounded-xl font-medium transition
+      ${
+        page === 1
+          ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+          : "bg-indigo-600 text-white hover:bg-indigo-700"
+      }`}
+        >
+          ← Prev
+        </button>
+
+        <div className="bg-white shadow px-5 py-2 rounded-xl border">
+          <span className="font-semibold text-slate-700">
+            Page {page} of {totalpage}
+          </span>
+        </div>
+
+        <button
+          disabled={page === totalpage}
+          onClick={() => setpage(page + 1)}
+          className={`px-5 py-2 rounded-xl font-medium transition
+      ${
+        page === totalpage
+          ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+          : "bg-indigo-600 text-white hover:bg-indigo-700"
+      }`}
+        >
+          Next →
+        </button>
       </div>
+     
+      </div>
+      
 
       {/* DELETE MODAL */}
       <AnimatePresence>
@@ -273,7 +316,8 @@ const Allproduct = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+     </div>
+     
   );
 };
 

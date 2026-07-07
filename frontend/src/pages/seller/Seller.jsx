@@ -105,11 +105,16 @@ const Seller = () => {
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(true);
   const now = useClock();
+  const [page,setpage] =useState(1)
+  const [totalpage ,settotalpage]=useState(1)
 
   const fetchallinone = async () => {
     try {
       const [productRes, categoryRes] = await Promise.all([
-        axios.get("http://localhost:8000/api/get", {
+        axios.get("http://localhost:8000/api/get",{params:{
+          page,
+          limit:3
+        }}, {
           withCredentials: true,
         }),
         axios.get("http://localhost:8000/api/public", {
@@ -118,6 +123,7 @@ const Seller = () => {
       ]);
 
       setProduct(productRes.data.product || []);
+      settotalpage(productRes.data.totalpage)
       setCategory(categoryRes.data.category || []);
     } catch (error) {
       console.log(error);
@@ -128,7 +134,7 @@ const Seller = () => {
 
   useEffect(() => {
     fetchallinone();
-  }, []);
+  }, [page]);
 
   const totalProducts = product.length;
   const totalCategories = category.length;
@@ -300,8 +306,44 @@ const Seller = () => {
               </div>
             )}
           </div>
+          <div className="flex items-center justify-center gap-4 mt-8">
+        <button
+          disabled={page === 1}
+          onClick={() => setpage(page - 1)}
+          className={`px-5 py-2 rounded-xl font-medium transition
+      ${
+        page === 1
+          ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+          : "bg-indigo-600 text-white hover:bg-indigo-700"
+      }`}
+        >
+          ← Prev
+        </button>
+
+        <div className="bg-white shadow px-5 py-2 rounded-xl border">
+          <span className="font-semibold text-slate-700">
+            Page {page} of {totalpage}
+          </span>
         </div>
+
+        <button
+          disabled={page === totalpage}
+          onClick={() => setpage(page + 1)}
+          className={`px-5 py-2 rounded-xl font-medium transition
+      ${
+        page === totalpage
+          ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+          : "bg-indigo-600 text-white hover:bg-indigo-700"
+      }`}
+        >
+          Next →
+        </button>
+      </div>
+     
+        </div>
+
       </main>
+      
     </div>
   );
 };

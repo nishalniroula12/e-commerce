@@ -46,17 +46,25 @@ const Allcategory = () => {
   const [deleteTarget, setDeleteTarget] = useState(null); // item to confirm-delete
   const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
+  const [page ,setpage]=useState(1)
+  const [totalpage ,settotalpage] =useState(1)
 
   const categoryfetch = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/public");
+      const res = await axios.get("http://localhost:8000/api/public",{
+        params:{
+          page,
+          limit:3
+        }
+      });
       setData(res.data.category || []);
+      settotalpage(res.data.totalpage)
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => { categoryfetch(); }, []);
+  useEffect(() => { categoryfetch(); }, [page]);
 
   const filtered = data.filter(
     (item) =>
@@ -267,6 +275,40 @@ const Allcategory = () => {
               )}
             </AnimatePresence>
           </motion.ul>
+          <div className="flex items-center justify-center gap-4 mt-8">
+        <button
+          disabled={page === 1}
+          onClick={() => setpage(page - 1)}
+          className={`px-5 py-2 rounded-xl font-medium transition
+      ${
+        page === 1
+          ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+          : "bg-indigo-600 text-white hover:bg-indigo-700"
+      }`}
+        >
+          ← Prev
+        </button>
+
+        <div className="bg-white shadow px-5 py-2 rounded-xl border">
+          <span className="font-semibold text-slate-700">
+            Page {page} of {totalpage}
+          </span>
+        </div>
+
+        <button
+          disabled={page === totalpage}
+          onClick={() => setpage(page + 1)}
+          className={`px-5 py-2 rounded-xl font-medium transition
+      ${
+        page === totalpage
+          ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+          : "bg-indigo-600 text-white hover:bg-indigo-700"
+      }`}
+        >
+          Next →
+        </button>
+      </div>
+     
         </div>
 
         {filtered.length > 0 && (

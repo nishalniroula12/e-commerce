@@ -36,11 +36,19 @@ export const createcategory =async(req,res)=>{
 
 export const createone =async(req,res)=>{
     try {
-        const category =await Category.find()
+        const page =parseInt(req.query.page)|| 1
+        const limit =parseInt(req.query.limit) || 6
+        const skip =(page -1) *limit
+        const totalcategory =await Category.countDocuments()
+        console.log(totalcategory)
+
+        const category =await Category.find().sort({createdAt: -1}).skip(skip).limit(limit)
         return res.status(200).json({
             success:true,
             message:'category gets',
-            category
+            category,
+            currentpage:page,
+            totalpage:Math.ceil(totalcategory /limit)
         })
         
     } catch (error) {

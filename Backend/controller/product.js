@@ -38,12 +38,21 @@ export const productcreate =async(req,res)=>{
 //public
 export const publicdata =async(req,res)=>{
     try {
-        const product =await (await Product.find().populate("category"))
+        const page =parseInt(req.query.page)|| 1
+        const limit =parseInt(req.query.limit) || 6
+        const skip =(page -1 ) * limit
+        const totalproduct =await Product.countDocuments()
+        console.log(totalproduct)
+
+        const product =await Product.find().populate("category").sort({createdAt: -1 }).skip(skip).limit(limit)
         console.log(product)
         res.status(200).json({
             success:true,
             message:"Get all product",
-            product
+            product,
+            currentpage:page,
+            totalpage:Math.ceil(totalproduct / limit)
+            
         })
     } catch (error) {
         console.log(error)
@@ -141,6 +150,32 @@ export const updateone =async(req,res)=>{
             product:uploadproduct
         })
         
+        
+    } catch (error) {
+        console.log(error)
+        
+    }
+}
+
+export const searhproduct =async(req,res)=>{
+    try {
+        const {search = ""} = req.query
+        const keyword = search.trim()
+        if(!keyword){
+            return res.status(200).json({
+                success:true,
+                product:[]
+            })
+        }
+        const product =await Product.find({
+            title:{
+                $regex:keyword,
+                $options:"i"
+            }
+        })
+        return res.status(201).json({
+            success:true,
+product        })
         
     } catch (error) {
         console.log(error)
