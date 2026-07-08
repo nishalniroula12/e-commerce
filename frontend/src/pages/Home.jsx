@@ -256,7 +256,7 @@ const Home = () => {
         {/* View All button */}
         <div className="text-center mt-10">
           <button
-            onClick={() => nav("/products")}
+            onClick={() => nav("/product")}
             className="bg-emerald-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-emerald-700 transition"
           >
             View All Products →
