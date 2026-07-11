@@ -164,7 +164,19 @@ const SidebarBody = ({ onNavigate }) => {
             All categories
           </SidebarLink>
         </NavGroup>
+        <NavGroup
+          icon={FaTags}
+          label="Seller"
+          isOpen={categoryOpen}
+          onToggle={() => setCategoryOpen((v) => !v)}
+        >
+          <SidebarLink to="/adminseller" icon={FaList} sub>
+            All Seller
+          </SidebarLink>
+        </NavGroup>
+      
       </nav>
+
 
       {/* User + logout footer */}
       <div className="border-t border-white/10 p-4">

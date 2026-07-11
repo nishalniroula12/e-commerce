@@ -13,19 +13,16 @@ const Signin = () => {
 
       <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center p-4">
         <div className="w-full max-w-6xl bg-white/10 backdrop-blur-lg rounded-3xl overflow-hidden shadow-2xl border border-white/20 flex flex-col lg:flex-row">
-
           {/* Left Side */}
           <div className="lg:w-1/2 p-10 flex flex-col justify-center text-white">
             <h1 className="text-5xl font-extrabold mb-6">
               Welcome to
-              <span className="block text-yellow-300">
-                Multi Vendor Store
-              </span>
+              <span className="block text-yellow-300">Multi Vendor Store</span>
             </h1>
 
             <p className="text-lg text-gray-200 leading-relaxed">
-              Create your account and start buying or selling products
-              with a powerful marketplace platform.
+              Create your account and start buying or selling products with a
+              powerful marketplace platform.
             </p>
 
             <div className="mt-10 space-y-4">
@@ -48,7 +45,6 @@ const Signin = () => {
 
           {/* Right Side */}
           <div className="lg:w-1/2 bg-white p-8 md:p-12 overflow-y-auto max-h-screen">
-
             <h2 className="text-4xl font-bold text-center text-gray-800 mb-2">
               Create Account
             </h2>
@@ -67,6 +63,7 @@ const Signin = () => {
                 description: "",
                 address: "",
                 taxnumber: "",
+                totalsales: "",
               }}
               onSubmit={async (values) => {
                 try {
@@ -83,19 +80,12 @@ const Signin = () => {
                 } catch (error) {
                   console.log(error);
 
-                  alert(
-                    error.response?.data?.message ||
-                      "Registration Failed"
-                  );
+                  alert(error.response?.data?.message || "Registration Failed");
                 }
               }}
             >
               {({ handleChange, handleSubmit, values }) => (
-                <form
-                  onSubmit={handleSubmit}
-                  className="space-y-5"
-                >
-
+                <form onSubmit={handleSubmit} className="space-y-5">
                   {/* Username */}
                   <div>
                     <label className="block mb-2 font-semibold text-gray-700">
@@ -165,7 +155,6 @@ const Signin = () => {
                   {/* Seller Fields */}
                   {values.role === "seller" && (
                     <div className="space-y-5 border rounded-xl p-5 bg-gray-50">
-
                       <h3 className="text-2xl font-bold text-indigo-600">
                         Seller Information
                       </h3>
@@ -184,7 +173,6 @@ const Signin = () => {
                           className="w-full p-4 border rounded-xl"
                         />
                       </div>
-
                       <div>
                         <label className="block mb-2 font-semibold">
                           Shop Description
@@ -214,7 +202,6 @@ const Signin = () => {
                           className="w-full p-4 border rounded-xl"
                         />
                       </div>
-                      
 
                       <div>
                         <label className="block mb-2 font-semibold">
@@ -230,7 +217,20 @@ const Signin = () => {
                           className="w-full p-4 border rounded-xl"
                         />
                       </div>
+                      <div>
+                        <label className="block mb-2 font-semibold">
+                          Tax Sales
+                        </label>
 
+                        <input
+                          type="text"
+                          name="totalsales"
+                          value={values.totalsales}
+                          onChange={handleChange}
+                          placeholder="Enter Tax Number"
+                          className="w-full p-4 border rounded-xl"
+                        />
+                      </div>
                     </div>
                   )}
 
@@ -243,9 +243,7 @@ const Signin = () => {
                   </button>
 
                   <div className="text-center">
-                    <p className="text-gray-600">
-                      Already have an account?
-                    </p>
+                    <p className="text-gray-600">Already have an account?</p>
 
                     <button
                       type="button"
@@ -255,13 +253,10 @@ const Signin = () => {
                       Login Here →
                     </button>
                   </div>
-
                 </form>
               )}
             </Formik>
-
           </div>
-
         </div>
       </div>
     </>
