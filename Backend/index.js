@@ -11,6 +11,7 @@ import productroutes from './routes/productroutes.js'
 import sellerroutes from './routes/sellerroutes.js'
 import orderroutes from './routes/orderroutes.js'
 import cartroutes from './routes/cartroutes.js'
+import adminroutes from './routes/adminroutes.js'
 import cookieParser from "cookie-parser";
 
 const app =express()
@@ -31,7 +32,7 @@ app.use("/api" ,productroutes)
 app.use("/api" ,sellerroutes)
 app.use("/api" ,orderroutes)
 app.use("/api",cartroutes)
-
+app.use("/api", adminroutes)
 app.get("/" ,(req,res)=>{
     res.json({
         success:true,

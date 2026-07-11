@@ -39,3 +39,25 @@ export const authenticate = async (req, res, next) => {
     });
   }
 };
+
+export const adminauth = (req, res, next) => {
+  if (req.users?.role === "admin") {
+    next();
+  } else {
+    return res.status(403).json({
+      success: false,
+      message: "access denied",
+    });
+  }
+};
+
+export const sellerauth = (req, res, next) => {
+  if (req.users?.role === "seller") {
+    next();
+  } else {
+    return res.status(403).json({
+      success: false,
+      message: "access denied for seller",
+    });
+  }
+};

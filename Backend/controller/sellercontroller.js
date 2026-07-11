@@ -26,11 +26,11 @@ export const createseller = async (req, res) => {
 
     const seller = await Seller.create({
       shopname,
-      user,
+      user:req.user._id,
       description,
       rating,
       taxnumber,
-      verificationstatus,
+      verificationstatus:"pending",
       verificationdate,
       bankdetails: {
             accountname: req.body.accountname,
@@ -44,7 +44,7 @@ export const createseller = async (req, res) => {
       shoplogo:result.secure_url,
       public_id:result.public_id
     });
-    return res.status(400).json({
+    return res.status(201).json({
         success:true,
         meassge:"Seller is create",
         seller

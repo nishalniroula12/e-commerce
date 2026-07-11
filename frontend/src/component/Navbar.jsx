@@ -953,9 +953,11 @@ const Navbar = () => {
                   </button>
                   {profileOpen && (
                     <div className="profile-menu">
+                      {user?.role ==="seller" && (
                         <NavLink to="/sellerpanel" className="profile-menu-item">
                           <FiSettings size={15} /> Seller panel
                         </NavLink>
+                  )}
                       
                       {user?.role === "admin" && (
                         <NavLink to="/admindashboard" className="profile-menu-item">

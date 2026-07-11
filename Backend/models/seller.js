@@ -1,4 +1,4 @@
-import mongoose, { trusted } from "mongoose";
+import mongoose from "mongoose";
 
 const sellermodel =new mongoose.Schema({
     shopname:{
@@ -13,10 +13,6 @@ const sellermodel =new mongoose.Schema({
 
     },
     description:{
-        type:String,
-        required:true
-    },
-    shoplogo:{
         type:String,
         required:true
     },
@@ -51,11 +47,7 @@ const sellermodel =new mongoose.Schema({
         type:String,
         required:true
     },
-    public_id:{
-        type:String,
-        required:true
-    }
-
+   
 
 },{timestamps:true})
 

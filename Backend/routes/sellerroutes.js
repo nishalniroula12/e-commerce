@@ -7,4 +7,5 @@ const router =express.Router()
 
 router.post("/seller",upload.single("shoplogo"),authenticate,createseller)
 
+
 export default router
