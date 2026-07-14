@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, NavLink } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
   Navigation,
@@ -753,7 +753,7 @@ const Product = () => {
                     </div>
 
                     <div className="flex gap-3">
-                      <button className="btn-buy flex-1 text-white font-extrabold py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2">
+                      <NavLink to='/checkout' className="btn-buy flex-1 text-white font-extrabold py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2">
                         <svg
                           className="w-4 h-4"
                           fill="none"
@@ -768,7 +768,7 @@ const Product = () => {
                           />
                         </svg>
                         Buy Now
-                      </button>
+                      </NavLink>
                       <button
                         onClick={() => handleAddToCart(item)}
                         className={`btn-cart ${

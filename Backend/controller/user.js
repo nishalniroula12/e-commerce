@@ -1,12 +1,13 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import { generatetoken } from "../utlis/generate.js";
+import {transporter} from "../config/nodemailer.js";
 import Seller from "../models/seller.js";
 // register
 export const registerdata = async (req, res) => {
   try {
     console.log(req.body);
-    const { username, email, password, role ,shopname,
+    const { username, email, password, role,shopname,
       description,
       address,
       taxnumber
@@ -26,12 +27,29 @@ export const registerdata = async (req, res) => {
       });
     }
     const hashpassword = await bcrypt.hash(password, 10);
-    const user = new User({
+    const otp =Math.floor(100000 + Math.random() * 900000).toString()
+
+    const newuser = new User({
       username,
       email,
       password: hashpassword,
+      verifyOtp:otp,
+      expireVerifyOtp:Date.now() +10 *60*1000,
       role,
     });
+    await newuser.save();
+    await transporter.sendMail({
+      from:process.env.SMTP_SENDER,
+      to:email,
+      subject:"try this otp",
+      text:"how are you",
+      html:`hello  ${otp} world`
+    })
+    res.json({
+      success:true,
+      message:"user created successfully"
+    })
+ 
     await user.save();
 
 
@@ -101,6 +119,7 @@ export const loginone = async (req, res) => {
     }
 
     const matchpassword = await bcrypt.compare(password, user.password);
+
     console.log(matchpassword);
     if (!matchpassword) {
       return res.status(400).json({
@@ -108,6 +127,7 @@ export const loginone = async (req, res) => {
         message: "Invalid password",
       });
     }
+  
     if (user.role === "seller") {
       console.log(user);
       const sellers = await Seller.find();
@@ -169,5 +189,128 @@ export const logoutla = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+  }
+};
+export const verifyotped =async(req,res)=>{
+  try {
+    const {email ,otp} =req.body
+    const user =await User.findOne({email})
+    if(!user){
+      return res.status(400).json({
+        success:false,
+        message:"user not found"
+      })
+    }
+    if(Date.now() >user.expireVerifyOtp){
+      return res.status(400).json({
+        success:false,
+        message:"opt expired"
+      })
+    }
+    if(user .verifyOtp !==otp){
+      return res.status(400).json({
+        success:false,
+        message:"Invalid otp"
+      })
+    }
+    user.isVerify=true,
+    user.verifyOtp=null,
+    user.expireVerifyOtp=null,
+
+    await user.save()
+    return res.status(200).json({
+      success:true,
+      message:"Email  verified successfully"
+    })
+
+    
+  } catch (error) {
+    console.log(error)
+    
+  }
+}
+export const forgetpass =async(req,res)=>{
+  try {
+    const {email} =req.body
+    const user =await User.findOne({email})
+    if(!user){
+    return res.status(401).json({
+      success:false,
+      message:"user not found"
+    })  
+  }
+
+  const otp =Math.floor(100000 + Math.random() * 900000).toString()
+  user.otp = otp,
+  user.otpExpire=Date.now() + 10 *60 *1000
+
+  await user.save()
+
+  await transporter.sendMail({
+    from: process.env.SMPT_USER,
+    to:user.email,
+    subject:"Reset password",
+    html: `
+        <p>Your reset token is:</p>
+        <h2>${otp}</h2>
+        <p>This token expires in 10 minutes.</p>
+      `,
+    });
+
+   res.status(200).json({
+    success:true,
+    message:"password link sent"
+  })
+}
+
+
+   catch (error) {
+    console.log(error)
+    
+  }
+
+}
+
+export const resetpassword = async (req, res) => {
+  try {
+    console.log(req.body);
+
+    const { token, password } = req.body;
+
+    if (!token || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Token and password are required",
+      });
+    }
+
+    const user = await User.findOne({
+      otp: token,
+      otpExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired token",
+      });
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+    user.otp = null;
+    user.otpExpire = null;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

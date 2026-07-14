@@ -21,6 +21,7 @@ import Adminpage from "./pages/admin/Adminpage";
 import Adminproduct from "./pages/admin/Adminproduct";
 import Admincategory from "./pages/admin/Admincategory";
 import Adminseller from "./pages/admin/Adminseller";
+import Forget from "./pages/Forget";
 
 const App = () => {
   return (
@@ -34,11 +35,14 @@ const App = () => {
         <Route path="/cart" element={<Cart/>}/>
         <Route path="/checkout" element={<Checkout/>  }/>
         <Route path="/payment" element={<Payment/>}/>
+        <Route path="/payment/:id" element={<Payment/>}/>
+
       </Route>
 
       {/* AUTH PAGES (no navbar) */}
       <Route path="/login" element={<Login />} />
       <Route path="/signin" element={<Signin />} />
+      <Route path="/forget" element={<Forget/>}/>
 
       {/* PROTECTED ROUTES */}
       <Route element={<Protectedroutes />}>

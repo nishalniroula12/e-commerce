@@ -20,7 +20,25 @@ const usermodel =new mongoose.Schema({
         enum:["user" ,"seller" ,"admin"],
         default:"user"
 
-    }
+    },
+
+isVerify:{
+    type:Boolean,
+    default: false
+},
+verifyOtp:{
+    type:String,
+},
+expireVerifyOtp:{
+    type:Date
+},
+otp:{
+    type:String,
+},
+otpExpire:{
+    type:Date
+
+}
 }
 ,{timestamps:true})
 

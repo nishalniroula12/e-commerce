@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 
 const Payment = ({ totalAmount = 1000 }) => {
   const [signature, setSignature] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const nav =useNavigate()
+  const {id} =useParams()
+  console.log(id)
   const [transactionUUID] = useState(
     `${Date.now()}${Math.floor(Math.random() * 10000)}`
   );
@@ -221,7 +225,12 @@ const Payment = ({ totalAmount = 1000 }) => {
   };
 
   return (
+    
     <div style={styles.wrapper}>
+      <>
+      <button onClick={()=>nav(`/payment/${id}`)}>Go Back</button>
+      </>
+       
       <div style={styles.card}>
         {/* Header */}
         <div style={styles.header}>

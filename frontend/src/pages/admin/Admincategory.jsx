@@ -103,15 +103,7 @@ const Admincategory = () => {
               Manage and organise your content categories
             </p>
           </div>
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.96 }}
-            onClick={() => navigate("/addcategory")}
-            className="self-start sm:self-auto flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm shadow-emerald-200 transition-colors"
-          >
-            <span className="text-lg leading-none">+</span> Add Category
-          </motion.button>
-        </div>
+           </div>
 
         {/* ── Stat bar ── */}
         <div className="flex flex-wrap gap-3 mb-6">

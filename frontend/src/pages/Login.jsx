@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Formik } from "formik";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { logindata } from "../Redux/slice";
 import { useDispatch } from "react-redux";
 import Navbar from "../component/Navbar";
@@ -124,12 +124,12 @@ const Login = () => {
                   </div>
 
                   <div className="flex justify-end">
-                    <button
+                    <NavLink to="/forget"
                       type="button"
                       className="text-indigo-600 hover:text-pink-500 font-medium"
                     >
                       Forgot Password?
-                    </button>
+                    </NavLink>
                   </div>
 
                   <button

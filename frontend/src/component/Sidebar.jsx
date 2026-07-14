@@ -35,12 +35,12 @@ const sidebarV = {
   closed: { x: -280, transition: { type: "spring", stiffness: 300, damping: 30 } },
 };
 const dropdownV = {
-  hidden: { opacity: 0, height: 0,   transition: { duration: 0.2 } },
-  show:   { opacity: 1, height: "auto", transition: { duration: 0.25, staggerChildren: 0.05, delayChildren: 0.05 } },
+  hidden: { opacity: 0, height: 0,   transition: { duration: 0.18 } },
+  show:   { opacity: 1, height: "auto", transition: { duration: 0.2, staggerChildren: 0.04, delayChildren: 0.02 } },
 };
 const itemV = {
-  hidden: { opacity: 0, x: -12 },
-  show:   { opacity: 1, x: 0, transition: { duration: 0.2 } },
+  hidden: { opacity: 0, x: -8 },
+  show:   { opacity: 1, x: 0, transition: { duration: 0.15 } },
 };
 const overlayV = {
   hidden: { opacity: 0 },
@@ -53,13 +53,13 @@ const NavItem = ({ to, iconPath, label }) => (
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
+        `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-150
          ${isActive
-           ? "bg-gradient-to-r from-violet-600/30 to-indigo-600/20 text-violet-300 border border-violet-500/30"
-           : "text-slate-400 hover:text-white hover:bg-white/5"}`
+           ? "bg-slate-900 text-white shadow-sm"
+           : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"}`
       }
     >
-      <Icon d={iconPath} size={15} />
+      <Icon d={iconPath} size={14} />
       {label}
     </NavLink>
   </motion.div>
@@ -69,22 +69,22 @@ const AccordionSection = ({ icon, label, isOpen, onToggle, children }) => (
   <div className="mb-1">
     <motion.button
       onClick={onToggle}
-      whileHover={{ backgroundColor: "rgba(255,255,255,0.06)" }}
+      whileHover={{ backgroundColor: "rgba(241, 245, 249, 0.6)" }}
       whileTap={{ scale: 0.98 }}
-      className="w-full flex items-center justify-between gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-slate-300 transition-colors"
+      className="w-full flex items-center justify-between gap-3 px-3.5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-slate-600 transition-colors"
     >
       <span className="flex items-center gap-3">
-        <span className={`p-1.5 rounded-lg transition-colors ${isOpen ? "bg-violet-600/20 text-violet-400" : "bg-white/5 text-slate-400"}`}>
-          <Icon d={icon} size={15} />
+        <span className={`p-1.5 rounded-lg transition-colors ${isOpen ? "bg-slate-100 text-slate-900" : "bg-slate-50 text-slate-400"}`}>
+          <Icon d={icon} size={14} />
         </span>
         {label}
       </span>
       <motion.span
         animate={{ rotate: isOpen ? 180 : 0 }}
-        transition={{ duration: 0.25 }}
-        className="text-slate-500"
+        transition={{ duration: 0.2 }}
+        className="text-slate-400"
       >
-        <Icon d={icons.chevron} size={14} />
+        <Icon d={icons.chevron} size={12} />
       </motion.span>
     </motion.button>
 
@@ -96,7 +96,7 @@ const AccordionSection = ({ icon, label, isOpen, onToggle, children }) => (
           initial="hidden"
           animate="show"
           exit="hidden"
-          className="overflow-hidden ml-3 pl-4 border-l border-white/8 mt-1 mb-1 flex flex-col gap-0.5"
+          className="overflow-hidden ml-5 pl-4 border-l border-slate-200 mt-1 mb-1 flex flex-col gap-1"
         >
           {children}
         </motion.div>
@@ -113,7 +113,7 @@ const Sidebar = () => {
   const [ordersOpen,   setOrdersOpen]   = useState(false);
   const [profileOpen,  setProfileOpen]  = useState(false);
   const navigate = useNavigate();
-  const dispatch =useDispatch()
+  const dispatch = useDispatch();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -121,7 +121,7 @@ const Sidebar = () => {
     try {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
-      dispatch(logoutdata())
+      dispatch(logoutdata());
       navigate("/");
     } catch (err) {
       console.error(err);
@@ -129,33 +129,33 @@ const Sidebar = () => {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-white border-r border-slate-200">
 
       {/* ── Brand ── */}
-      <div className="px-5 pt-6 pb-4">
+      <div className="px-6 pt-6 pb-5">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
+          <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center shadow-sm">
             <span className="text-white font-bold text-sm">S</span>
           </div>
           <div>
-            <p className="text-white font-bold text-sm leading-tight">Seller Panel</p>
-            <p className="text-slate-500 text-xs">Dashboard</p>
+            <p className="text-slate-900 font-extrabold text-xs uppercase tracking-wider leading-tight">Seller Panel</p>
+            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">Dashboard</p>
           </div>
         </div>
       </div>
 
       {/* ── User card ── */}
-      <div className="mx-3 mb-5 p-3 rounded-2xl bg-gradient-to-r from-violet-900/40 to-indigo-900/30 border border-violet-500/20">
+      <div className="mx-4 mb-5 p-3 rounded-2xl bg-slate-50 border border-slate-200/60">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-500 to-violet-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+          <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-slate-700 font-bold text-sm flex-shrink-0 border border-white">
             {(user?.name?.[0] || user?.email?.[0] || "S").toUpperCase()}
           </div>
           <div className="min-w-0">
-            <p className="text-white text-sm font-semibold truncate">{user?.name || "Seller"}</p>
-            <p className="text-slate-400 text-xs truncate">{user?.email || "seller@store.com"}</p>
+            <p className="text-slate-800 text-xs font-bold uppercase tracking-wide truncate">{user?.name || "Seller"}</p>
+            <p className="text-slate-400 font-mono text-[10px] truncate">{user?.email || "seller@store.com"}</p>
           </div>
           <div className="ml-auto">
-            <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30">
+            <span className="text-[9px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full border border-emerald-200">
               Active
             </span>
           </div>
@@ -163,25 +163,25 @@ const Sidebar = () => {
       </div>
 
       {/* ── Nav label ── */}
-      <p className="px-5 text-[10px] font-semibold text-slate-600 uppercase tracking-widest mb-2">
+      <p className="px-6 text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">
         Main Menu
       </p>
 
       {/* ── Nav items ── */}
-      <nav className="flex-1 px-3 flex flex-col gap-0.5 overflow-y-auto scrollbar-thin">
+      <nav className="flex-1 px-4 flex flex-col gap-1 overflow-y-auto">
 
         {/* Dashboard */}
         <motion.div whileHover={{ x: 2 }} transition={{ type: "spring", stiffness: 400, damping: 25 }}>
           <NavLink
             to="/dashboard"
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200
+              `flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-150
                ${isActive
-                 ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25"
-                 : "text-slate-400 hover:text-white hover:bg-white/5"}`
+                 ? "bg-slate-900 text-white shadow-sm"
+                 : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"}`
             }
           >
-            <Icon d={icons.dashboard} size={16} />
+            <Icon d={icons.dashboard} size={15} />
             Dashboard
           </NavLink>
         </motion.div>
@@ -221,8 +221,8 @@ const Sidebar = () => {
         </AccordionSection>
 
         {/* Divider */}
-        <div className="my-3 border-t border-white/5" />
-        <p className="px-3 text-[10px] font-semibold text-slate-600 uppercase tracking-widest mb-2">
+        <div className="my-4 border-t border-slate-100" />
+        <p className="px-3 text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">
           Account
         </p>
 
@@ -233,21 +233,21 @@ const Sidebar = () => {
           isOpen={profileOpen}
           onToggle={() => setProfileOpen(p => !p)}
         >
-          <NavItem to="/seller/profile"         iconPath={icons.profile}  label="My Profile" />
-          <NavItem to="/seller/change-password" iconPath={icons.password} label="Change Password" />
+          <NavItem to="/forget"         iconPath={icons.profile}  label="My Profile" />
+          <NavItem to="/forget" iconPath={icons.password} label="Change Password" />
         </AccordionSection>
 
       </nav>
 
       {/* ── Logout ── */}
-      <div className="p-3 mt-2">
+      <div className="p-4 mt-2">
         <motion.button
           onClick={logout}
-          whileHover={{ scale: 1.01, backgroundColor: "rgba(239,68,68,0.12)" }}
+          whileHover={{ scale: 1.01, backgroundColor: "rgba(225, 29, 72, 0.05)" }}
           whileTap={{ scale: 0.98 }}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-red-400 border border-red-500/20 hover:border-red-500/40 transition-colors"
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-rose-50 border border-rose-100 py-3 text-xs font-bold uppercase tracking-wider text-rose-600 transition-colors hover:bg-rose-100/40 active:bg-rose-200"
         >
-          <Icon d={icons.logout} size={16} />
+          <Icon d={icons.logout} size={15} />
           Sign Out
         </motion.button>
       </div>
@@ -258,24 +258,24 @@ const Sidebar = () => {
   return (
     <>
       {/* ── Mobile top bar ── */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-3 bg-slate-950/95 backdrop-blur border-b border-white/8">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-3.5 bg-white/95 backdrop-blur-md border-b border-slate-200">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center">
             <span className="text-white font-bold text-xs">S</span>
           </div>
-          <span className="text-white font-bold text-sm">Seller Panel</span>
+          <span className="text-xs font-extrabold uppercase tracking-wider text-slate-900">Seller Panel</span>
         </div>
         <div className="flex items-center gap-3">
-          <motion.button whileTap={{ scale: 0.9 }} className="relative text-slate-400 hover:text-white">
-            <Icon d={icons.bell} size={20} />
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-violet-500 rounded-full" />
+          <motion.button whileTap={{ scale: 0.9 }} className="relative text-slate-500 hover:text-slate-900">
+            <Icon d={icons.bell} size={18} />
+            <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-slate-900 rounded-full" />
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setMobileOpen(p => !p)}
-            className="text-slate-400 hover:text-white p-1"
+            className="text-slate-500 hover:text-slate-900 p-1"
           >
-            <Icon d={mobileOpen ? icons.close : icons.menu} size={22} />
+            <Icon d={mobileOpen ? icons.close : icons.menu} size={20} />
           </motion.button>
         </div>
       </div>
@@ -290,7 +290,7 @@ const Sidebar = () => {
             animate="show"
             exit="hidden"
             onClick={() => setMobileOpen(false)}
-            className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+            className="lg:hidden fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm"
           />
         )}
       </AnimatePresence>
@@ -302,8 +302,7 @@ const Sidebar = () => {
         animate={mobileOpen ? "open" : "closed"}
         className="
           lg:hidden fixed top-0 left-0 z-50 h-full w-72
-          bg-slate-950 border-r border-white/8
-          shadow-2xl shadow-black/60
+          bg-white shadow-2xl
         "
       >
         <SidebarContent />
@@ -312,15 +311,15 @@ const Sidebar = () => {
       {/* ── Desktop sidebar (static) ── */}
       <aside className="
         hidden lg:flex flex-col w-64 xl:w-72 min-h-screen flex-shrink-0
-        bg-slate-950 border-r border-white/[0.07]
-        relative
+        bg-white relative
       ">
-        {/* Ambient glow */}
-        <div className="pointer-events-none absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-violet-900/20 to-transparent" />
         <div className="relative z-10 flex flex-col h-full">
           <SidebarContent />
         </div>
       </aside>
+
+      {/* Mobile Top Bar Spacer */}
+      <div className="h-[57px] lg:hidden" style={{ height: "calc(57px + env(safe-area-inset-top))" }} />
     </>
   );
 };

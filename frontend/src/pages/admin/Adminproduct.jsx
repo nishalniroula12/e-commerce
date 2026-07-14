@@ -115,12 +115,7 @@ const Adminproduct= () => {
             <p className="text-sm text-slate-400">Manage your product inventory</p>
           </div>
 
-          <button
-            onClick={() => nav("/addproduct")}
-            className="bg-emerald-600 text-white px-5 py-2 rounded-xl"
-          >
-            + Add Product
-          </button>
+          
         </div>
 
         {/* STATS */}
